@@ -9,6 +9,6 @@ class MemoriesController extends Controller
 {
     public function index()
     {
-        return Inertia::render();
+        return Inertia::render('Memories/Index', []);
     }
 }

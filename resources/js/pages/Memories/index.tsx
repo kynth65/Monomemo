@@ -4,15 +4,18 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
-        href: '/dashboard',
+        title: 'Memories',
+        href: '/memories',
     },
 ];
 
 export default function Index() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Memories" />
+            <div className="flex h-full w-full items-center justify-center">
+                <h1 className="text-lg text-green-400">Memories</h1>
+            </div>
         </AppLayout>
     );
 }
