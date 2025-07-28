@@ -13,6 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
     Route::get('/memories', [MemoriesController::class, 'index'])->name('memories.index');
+    Route::get('/memories/create', [MemoriesController::class, 'create'])->name('memories.create');
 });
 
 require __DIR__ . '/settings.php';

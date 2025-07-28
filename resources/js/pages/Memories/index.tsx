@@ -1,6 +1,7 @@
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -13,8 +14,10 @@ export default function Index() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Memories" />
-            <div className="flex h-full w-full items-center justify-center">
-                <h1 className="text-lg text-green-400">Memories</h1>
+            <div className="m-4">
+                <Link href={route('memories.create')}>
+                    <Button>Click me</Button>
+                </Link>
             </div>
         </AppLayout>
     );
