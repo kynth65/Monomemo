@@ -17,14 +17,14 @@ export default function Index() {
             <div>
                 <form>
                     <div>
-                        <label htmlFor="memoryTitle" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="memoryTitle" className="m-4 block text-sm font-medium text-gray-700">
                             Memory Title
                         </label>
                         <input
                             type="text"
                             id="memoryTitle"
                             name="memoryTitle"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            className="m-4 mt-1 block h-14 w-50 rounded-md border-gray-300 p-5 shadow-sm focus:w-100 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             placeholder="Enter your memory title"
                         />
                     </div>
