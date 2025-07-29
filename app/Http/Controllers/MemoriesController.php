@@ -11,4 +11,9 @@ class MemoriesController extends Controller
     {
         return Inertia::render('Memories/Index', []);
     }
+
+    public function create()
+    {
+        return Inertia::render('Memories/Create', []);
+    }
 }
