@@ -1,8 +1,10 @@
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import { AlertCircleIcon } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,6 +50,7 @@ export default function Index() {
                             type="text"
                             id="memoryTitle"
                             name="memoryTitle"
+                            required
                             value={data.memoryTitle}
                             onChange={(e) => setData('memoryTitle', e.target.value)}
                             className="m-4 mt-1 block h-14 w-50 rounded-md border-gray-300 p-5 shadow-sm focus:w-100 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -61,6 +64,7 @@ export default function Index() {
                         <Textarea
                             id="memoryDescription"
                             name="memoryDescription"
+                            required
                             rows={4}
                             value={data.memoryDescription}
                             onChange={(e) => setData('memoryDescription', e.target.value)}
@@ -74,6 +78,7 @@ export default function Index() {
                         </label>
                         <select
                             id="memoryMonth"
+                            required
                             name="memoryMonth"
                             value={data.memoryMonth}
                             onChange={(e) => setData('memoryMonth', e.target.value)}
@@ -94,9 +99,25 @@ export default function Index() {
                             <option value="December">December</option>
                         </select>
                     </div>
+
                     <Button type="submit" className="m-4">
                         Submit
                     </Button>
+                    {/* Display errors if any */}
+                    {Object.keys(errors).length > 0 && (
+                        <Alert variant="destructive" className="m-4 max-w-xl">
+                            <AlertCircleIcon />
+                            <AlertTitle>Unable to post your images.</AlertTitle>
+                            <AlertDescription>
+                                <p>Please input every necessary details.</p>
+                                <ul className="list-inside list-disc text-sm">
+                                    <li>Check your card details</li>
+                                    <li>Ensure sufficient funds</li>
+                                    <li>Verify billing address</li>
+                                </ul>
+                            </AlertDescription>
+                        </Alert>
+                    )}
                 </form>
             </div>
         </AppLayout>

@@ -19,6 +19,10 @@ class MemoriesController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request);
+        $request->validate([
+            'memory_title' => 'required|string|max:255',
+            'memory_description' => 'required|string',
+            'memory_month' => 'required|string|max:255',
+        ]);
     }
 }
