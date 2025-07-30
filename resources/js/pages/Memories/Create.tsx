@@ -1,6 +1,8 @@
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,12 +12,34 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index() {
+    const { data, setData, post, processing, errors } = useForm({
+        memoryTitle: '',
+        memoryDescription: '',
+        memoryMonth: '',
+    });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(route('memories.store'), {
+            onSuccess: () => {
+                // Optionally reset the form or redirect after successful submission
+                setData({
+                    memoryTitle: '',
+                    memoryDescription: '',
+                    memoryMonth: '',
+                });
+            },
+            onError: (errors) => {
+                console.error('Submission failed:', errors);
+            },
+        });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create your new memory" />
             <div className="m-4"> This is your new memory</div>
             <div>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="memoryTitle" className="m-4 block text-sm font-medium text-gray-700">
                             Memory Title
@@ -24,6 +48,8 @@ export default function Index() {
                             type="text"
                             id="memoryTitle"
                             name="memoryTitle"
+                            value={data.memoryTitle}
+                            onChange={(e) => setData('memoryTitle', e.target.value)}
                             className="m-4 mt-1 block h-14 w-50 rounded-md border-gray-300 p-5 shadow-sm focus:w-100 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             placeholder="Enter your memory title"
                         />
@@ -32,19 +58,25 @@ export default function Index() {
                         <label htmlFor="memoryDescription" className="m-4 block text-sm font-medium text-gray-700">
                             Memory Description
                         </label>
-                        <textarea
+                        <Textarea
                             id="memoryDescription"
                             name="memoryDescription"
                             rows={4}
+                            value={data.memoryDescription}
+                            onChange={(e) => setData('memoryDescription', e.target.value)}
                             className="m-4 mt-1 block max-w-2xl rounded-md border-gray-300 p-5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             placeholder="Describe your memory here"
-                        ></textarea>
+                        ></Textarea>
                     </div>
                     <div>
-                        <label htmlFor="memoryMonth">Month of memory</label>
+                        <label htmlFor="memoryMonth" className="m-4 block text-sm font-medium text-gray-700">
+                            Month of memory
+                        </label>
                         <select
                             id="memoryMonth"
                             name="memoryMonth"
+                            value={data.memoryMonth}
+                            onChange={(e) => setData('memoryMonth', e.target.value)}
                             className="m-4 mt-1 block max-w-2xl rounded-md border-gray-300 p-5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         >
                             <option value="">Select a month</option>
@@ -62,6 +94,9 @@ export default function Index() {
                             <option value="December">December</option>
                         </select>
                     </div>
+                    <Button type="submit" className="m-4">
+                        Submit
+                    </Button>
                 </form>
             </div>
         </AppLayout>
