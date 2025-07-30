@@ -28,6 +28,6 @@ class MemoriesController extends Controller
 
         Memories::create($request->all());
 
-        return redirect()->route('memories.index');
+        return redirect()->route('memories.index')->with('message', 'Memory created successfully!');
     }
 }
