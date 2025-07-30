@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Termwind\Components\Dd;
+use App\Models\Memories;
 
 class MemoriesController extends Controller
 {
@@ -24,5 +25,9 @@ class MemoriesController extends Controller
             'memory_description' => 'required|string',
             'memory_month' => 'required|string|max:255',
         ]);
+
+        Memories::create($request->all());
+
+        return redirect()->route('memories.index');
     }
 }

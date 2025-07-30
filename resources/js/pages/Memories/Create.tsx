@@ -15,25 +15,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Index() {
     const { data, setData, post, processing, errors } = useForm({
-        memoryTitle: '',
-        memoryDescription: '',
-        memoryMonth: '',
+        memory_title: '',
+        memory_description: '',
+        memory_month: '',
     });
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('memories.store'), {
-            onSuccess: () => {
-                // Optionally reset the form or redirect after successful submission
-                setData({
-                    memoryTitle: '',
-                    memoryDescription: '',
-                    memoryMonth: '',
-                });
-            },
-            onError: (errors) => {
-                console.error('Submission failed:', errors);
-            },
-        });
+        post(route('memories.store'));
     };
 
     return (
@@ -51,8 +40,8 @@ export default function Index() {
                             id="memoryTitle"
                             name="memoryTitle"
                             required
-                            value={data.memoryTitle}
-                            onChange={(e) => setData('memoryTitle', e.target.value)}
+                            value={data.memory_title}
+                            onChange={(e) => setData('memory_title', e.target.value)}
                             className="m-4 mt-1 block h-14 w-50 rounded-md border-gray-300 p-5 shadow-sm focus:w-100 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             placeholder="Enter your memory title"
                         />
@@ -66,8 +55,8 @@ export default function Index() {
                             name="memoryDescription"
                             required
                             rows={4}
-                            value={data.memoryDescription}
-                            onChange={(e) => setData('memoryDescription', e.target.value)}
+                            value={data.memory_description}
+                            onChange={(e) => setData('memory_description', e.target.value)}
                             className="m-4 mt-1 block max-w-2xl rounded-md border-gray-300 p-5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             placeholder="Describe your memory here"
                         ></Textarea>
@@ -80,8 +69,8 @@ export default function Index() {
                             id="memoryMonth"
                             required
                             name="memoryMonth"
-                            value={data.memoryMonth}
-                            onChange={(e) => setData('memoryMonth', e.target.value)}
+                            value={data.memory_month}
+                            onChange={(e) => setData('memory_month', e.target.value)}
                             className="m-4 mt-1 block max-w-2xl rounded-md border-gray-300 p-5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         >
                             <option value="">Select a month</option>
@@ -109,11 +98,12 @@ export default function Index() {
                             <AlertCircleIcon />
                             <AlertTitle>Unable to post your images.</AlertTitle>
                             <AlertDescription>
-                                <p>Please input every necessary details.</p>
                                 <ul className="list-inside list-disc text-sm">
-                                    <li>Check your card details</li>
-                                    <li>Ensure sufficient funds</li>
-                                    <li>Verify billing address</li>
+                                    {Object.entries(errors).map(([key, value]) => (
+                                        <li key={key} className="text-red-600">
+                                            {value}
+                                        </li>
+                                    ))}
                                 </ul>
                             </AlertDescription>
                         </Alert>
