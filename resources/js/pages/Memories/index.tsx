@@ -87,11 +87,11 @@ export default function MemoriesIndex() {
                 </div>
 
                 {memories.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {memories.map((memory) => (
                             <div
                                 key={memory.id}
-                                className="group relative h-80 cursor-pointer rounded-2xl bg-gray-200 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                className="group relative h-100 cursor-pointer bg-gray-200 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                                 onClick={() => openMemoryGrid(memory)}
                             >
                                 {/* Check if memory has images */}
@@ -103,7 +103,7 @@ export default function MemoriesIndex() {
                                                 <img
                                                     src={memory.images[0].image_url}
                                                     alt={memory.memory_title}
-                                                    className="h-80 w-full rounded-xl object-cover"
+                                                    className="h-100 w-full object-cover"
                                                 />
                                             </div>
                                         </div>
@@ -181,7 +181,7 @@ export default function MemoriesIndex() {
 
             {/* Modal for Image Grid/Single View */}
             {selectedMemory && (
-                <div className="bg-opacity-90 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50 p-4">
                     <div className="relative max-h-full w-full max-w-6xl overflow-hidden rounded-xl bg-white">
                         {/* Modal Header */}
                         <div className="flex items-center justify-between bg-white p-4 shadow-sm">
@@ -197,7 +197,7 @@ export default function MemoriesIndex() {
                         {/* Modal Content */}
                         <div className="max-h-[80vh] overflow-auto">
                             {viewMode === 'grid' ? (
-                                <div className="grid grid-cols-2 gap-2 p-4 sm:grid-cols-3 md:grid-cols-4">
+                                <div className="grid grid-cols-1 gap-10 p-4 sm:grid-cols-3 md:grid-cols-4">
                                     {selectedMemory.images.map((image, index) => (
                                         <div
                                             key={image.id}
@@ -207,7 +207,7 @@ export default function MemoriesIndex() {
                                             <img
                                                 src={image.image_url}
                                                 alt={`${selectedMemory.memory_title} - Image ${index + 1}`}
-                                                className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                                                className="h-full w-full object-cover transition-transform group-hover:scale-104"
                                             />
                                         </div>
                                     ))}
