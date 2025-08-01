@@ -14,21 +14,30 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index() {
-    const { data, setData, post, processing, errors } = useForm({
+    // Fix: Define the proper type for the form data
+    const { data, setData, post, processing, errors } = useForm<{
+        memory_title: string;
+        memory_description: string;
+        memory_month: string;
+        image: File | null;
+    }>({
         memory_title: '',
         memory_description: '',
         memory_month: '',
+        image: null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('memories.store'));
+        post(route('memories.store'), {
+            forceFormData: true,
+        });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create your new memory" />
-            <div className="m-4"> This is your new memory</div>
+            <div className="m-4">This is your new memory</div>
             <div>
                 <form onSubmit={handleSubmit}>
                     <div>
@@ -46,6 +55,23 @@ export default function Index() {
                             placeholder="Enter your memory title"
                         />
                     </div>
+
+                    {/* Fixed IMAGE INPUT */}
+                    <div>
+                        <label htmlFor="memoryImage" className="m-4 block text-sm font-medium text-gray-700">
+                            Memory Image
+                        </label>
+                        <input
+                            type="file"
+                            id="memoryImage"
+                            name="memoryImage"
+                            accept="image/*"
+                            required
+                            onChange={(e) => setData('image', e.target.files?.[0] || null)}
+                            className="m-4 mt-1 block max-w-2xl rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        />
+                    </div>
+
                     <div>
                         <label htmlFor="memoryDescription" className="m-4 block text-sm font-medium text-gray-700">
                             Memory Description
@@ -59,8 +85,9 @@ export default function Index() {
                             onChange={(e) => setData('memory_description', e.target.value)}
                             className="m-4 mt-1 block max-w-2xl rounded-md border-gray-300 p-5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             placeholder="Describe your memory here"
-                        ></Textarea>
+                        />
                     </div>
+
                     <div>
                         <label htmlFor="memoryMonth" className="m-4 block text-sm font-medium text-gray-700">
                             Month of memory
@@ -89,14 +116,14 @@ export default function Index() {
                         </select>
                     </div>
 
-                    <Button type="submit" className="m-4">
-                        Submit
+                    <Button type="submit" disabled={processing} className="m-4">
+                        {processing ? 'Uploading...' : 'Submit'}
                     </Button>
-                    {/* Display errors if any */}
+
                     {Object.keys(errors).length > 0 && (
                         <Alert variant="destructive" className="m-4 max-w-xl">
                             <AlertCircleIcon />
-                            <AlertTitle>Unable to post your images.</AlertTitle>
+                            <AlertTitle>Unable to post your memory.</AlertTitle>
                             <AlertDescription>
                                 <ul className="list-inside list-disc text-sm">
                                     {Object.entries(errors).map(([key, value]) => (

@@ -10,5 +10,7 @@ class Memories extends Model
         'memory_title',
         'memory_description',
         'memory_month',
+        'image_url',
+        'image_public_id',
     ];
 }
