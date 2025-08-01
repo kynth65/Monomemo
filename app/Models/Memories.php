@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Memories extends Model
 {
@@ -10,7 +11,10 @@ class Memories extends Model
         'memory_title',
         'memory_description',
         'memory_month',
-        'image_url',
-        'image_public_id',
     ];
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(Image::class, 'memory_id')->orderBy('order');
+    }
 }
