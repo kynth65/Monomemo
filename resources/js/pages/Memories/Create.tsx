@@ -29,6 +29,15 @@ export default function Index() {
 
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
+    // Helper function to format file size
+    const formatFileSize = (bytes: number): string => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
 
@@ -47,6 +56,9 @@ export default function Index() {
     const removeImage = (index: number) => {
         const newImages = data.images.filter((_, i) => i !== index);
         const newPreviews = imagePreviews.filter((_, i) => i !== index);
+
+        // Clean up the preview URL to prevent memory leaks
+        URL.revokeObjectURL(imagePreviews[index]);
 
         setData('images', newImages);
         setImagePreviews(newPreviews);
@@ -72,7 +84,7 @@ export default function Index() {
             <div className="mx-auto max-w-4xl p-6">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold text-gray-900">Create New Memory Album</h1>
-                    <p className="text-gray-600">Upload 5-10 images to create your monthly memory album</p>
+                    <p className="text-gray-600">Upload 5-10 images to create your monthly memory album (max 10MB each)</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -151,13 +163,13 @@ export default function Index() {
                                     </label>
                                     <p className="pl-1">or drag and drop</p>
                                 </div>
-                                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 2MB each</p>
+                                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB each</p>
                                 <p className="text-xs text-gray-500">Select 5-10 images at once</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Image Previews */}
+                    {/* Image Previews with File Sizes */}
                     {imagePreviews.length > 0 && (
                         <div>
                             <h3 className="mb-3 text-sm font-medium text-gray-700">
@@ -175,6 +187,11 @@ export default function Index() {
                                         >
                                             <X className="h-4 w-4" />
                                         </button>
+                                        {/* File Size Display */}
+                                        <div className="bg-opacity-70 absolute right-0 bottom-0 left-0 rounded-b-md bg-black p-1 text-xs text-white">
+                                            <div className="truncate">{data.images[index]?.name}</div>
+                                            <div className="text-gray-300">{formatFileSize(data.images[index]?.size || 0)}</div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

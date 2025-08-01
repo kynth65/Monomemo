@@ -38,7 +38,7 @@ class MemoriesController extends Controller
             'memory_description' => 'required|string',
             'memory_month' => 'required|string|max:255',
             'images' => 'required|array|min:5|max:10', // Require 5-10 images
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         // Create the memory first
