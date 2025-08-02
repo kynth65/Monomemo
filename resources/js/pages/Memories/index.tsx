@@ -80,47 +80,46 @@ export default function MemoriesIndex() {
                 )}
 
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-900">Your Memory Albums</h1>
-                    <Button asChild>
-                        <Link href={route('memories.create')}>Create New Album</Link>
+                    <h1 className="font-bold text-gray-900 sm:text-sm lg:text-2xl">Your Memory Albums</h1>
+                    <Button className="text-sm" asChild>
+                        <Link href={route('memories.create')}>New</Link>
                     </Button>
                 </div>
 
                 {memories.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-2 gap-10 lg:grid-cols-3">
                         {memories.map((memory) => (
                             <div
                                 key={memory.id}
-                                className="group relative h-100 cursor-pointer bg-gray-200 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                className="group relative h-40 cursor-pointer bg-gray-200 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                                 onClick={() => openMemoryGrid(memory)}
                             >
                                 {/* Check if memory has images */}
                                 {memory.images && memory.images.length > 0 ? (
                                     <>
                                         {/* Main Preview Image - Centered */}
-                                        <div>
+                                        <div className="mb-4">
                                             <div className="relative h-full w-full">
                                                 <img
                                                     src={memory.images[0].image_url}
                                                     alt={memory.memory_title}
-                                                    className="h-100 w-full object-cover"
+                                                    className="h-40 w-full object-cover lg:h-100"
                                                 />
                                             </div>
-                                        </div>
+                                            {/* Month - bottom center */}
+                                            <div className="transform">
+                                                <div className="">
+                                                    <h2 className="text-xl font-semibold text-black drop-shadow-2xl">
+                                                        {memory.memory_month.toUpperCase()}
+                                                    </h2>
 
-                                        {/* Month - Top Center */}
-                                        <div className="absolute top-2 right-0 -translate-x-1/2 transform">
-                                            <div className="text-center">
-                                                <h2 className="text-3xl font-bold tracking-wider text-white drop-shadow-2xl">
-                                                    {memory.memory_month.toUpperCase()}
-                                                </h2>
-
-                                                <div className="mx-auto mt-1 h-1 w-12 rounded-full opacity-90" />
+                                                    <div className="mx-auto mt-1 h-1 w-12 rounded-full opacity-90" />
+                                                </div>
                                             </div>
                                         </div>
 
                                         {/* Content - Bottom */}
-                                        <div className="absolute bottom-5 left-5">
+                                        <div className="absolute bottom-5 left-5 hidden lg:block">
                                             <h3 className="mb-1 text-lg font-bold text-white">{memory.memory_title}</h3>
                                         </div>
                                     </>
