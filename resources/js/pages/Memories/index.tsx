@@ -1,5 +1,6 @@
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -80,18 +81,18 @@ export default function MemoriesIndex() {
                 )}
 
                 <div className="flex items-center justify-between">
-                    <h1 className="font-bold text-gray-900 sm:text-sm lg:text-2xl">Your Memory Albums</h1>
+                    <Label className="font-bold sm:text-sm lg:text-2xl">Your Memory Albums</Label>
                     <Button className="text-sm" asChild>
                         <Link href={route('memories.create')}>New</Link>
                     </Button>
                 </div>
 
                 {memories.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-10 lg:grid-cols-3">
+                    <div className="grid grid-cols-2 gap-10 md:grid-cols-3 lg:gap-16">
                         {memories.map((memory) => (
                             <div
                                 key={memory.id}
-                                className="group relative h-40 cursor-pointer bg-gray-200 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                className="group relative h-40 cursor-pointer transition-all duration-300 hover:scale-102 hover:shadow-xl md:h-70 lg:h-100"
                                 onClick={() => openMemoryGrid(memory)}
                             >
                                 {/* Check if memory has images */}
@@ -103,25 +104,17 @@ export default function MemoriesIndex() {
                                                 <img
                                                     src={memory.images[0].image_url}
                                                     alt={memory.memory_title}
-                                                    className="h-40 w-full object-cover lg:h-100"
+                                                    className="h-40 w-full object-cover md:h-70 lg:h-100"
                                                 />
-                                            </div>
-                                            {/* Month - bottom center */}
-                                            <div className="transform">
-                                                <div className="">
-                                                    <h2 className="text-xl font-semibold text-black drop-shadow-2xl">
-                                                        {memory.memory_month.toUpperCase()}
-                                                    </h2>
-
-                                                    <div className="mx-auto mt-1 h-1 w-12 rounded-full opacity-90" />
+                                                {/* Month - bottom center */}
+                                                <div>
+                                                    <Label className="text-[15px] md:text-xl"> {memory.memory_month.toUpperCase()}</Label>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Content - Bottom */}
-                                        <div className="absolute bottom-5 left-5 hidden lg:block">
-                                            <h3 className="mb-1 text-lg font-bold text-white">{memory.memory_title}</h3>
-                                        </div>
+                                        <div className="absolute bottom-5 left-5 hidden lg:block"></div>
                                     </>
                                 ) : (
                                     <>
