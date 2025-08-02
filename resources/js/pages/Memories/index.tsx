@@ -88,7 +88,7 @@ export default function MemoriesIndex() {
                 </div>
 
                 {memories.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-10 md:grid-cols-3 lg:gap-16">
+                    <div className="grid grid-cols-2 gap-1 space-y-10 md:grid-cols-3 lg:gap-4">
                         {memories.map((memory) => (
                             <div
                                 key={memory.id}
@@ -100,7 +100,7 @@ export default function MemoriesIndex() {
                                     <>
                                         {/* Main Preview Image - Centered */}
                                         <div className="mb-4">
-                                            <div className="relative h-full w-full">
+                                            <div className="relative h-full w-full space-y-1">
                                                 <img
                                                     src={memory.images[0].image_url}
                                                     alt={memory.memory_title}
@@ -173,15 +173,15 @@ export default function MemoriesIndex() {
 
             {/* Modal for Image Grid/Single View */}
             {selectedMemory && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50 p-4">
-                    <div className="relative max-h-full w-full max-w-6xl overflow-hidden rounded-xl bg-white">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 p-4 backdrop-blur-sm" onClick={closeModal}>
+                    <div className="relative max-h-full w-full max-w-6xl overflow-hidden rounded-xl bg-white" onClick={(e) => e.stopPropagation()}>
                         {/* Modal Header */}
                         <div className="flex items-center justify-between bg-white p-4 shadow-sm">
                             <div>
                                 <h2 className="text-xl font-bold text-gray-900">{selectedMemory.memory_title}</h2>
                                 <p className="text-sm text-gray-600">{selectedMemory.memory_description}</p>
                             </div>
-                            <Button variant="ghost" size="sm" onClick={closeModal} className="rounded-full">
+                            <Button size="sm" onClick={closeModal} className="rounded-full">
                                 <X className="h-5 w-5" />
                             </Button>
                         </div>
