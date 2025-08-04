@@ -77,8 +77,7 @@ export default function Welcome() {
                             <div className="mx-auto mb-8 h-[1px] w-24 bg-[#d4af37] opacity-60"></div>
 
                             <p className="mx-auto max-w-3xl text-xl font-light leading-relaxed text-[#666] lg:text-2xl">
-                                I made this little space for us, a place where we can capture the best part of every
-                                month.
+                                I made this little space for us, a place where we can capture the best part of every month.
                                 <br className="hidden lg:block" />
                                 Just one memory at a time, so we can truly savor it.
                             </p>
@@ -88,10 +87,10 @@ export default function Welcome() {
                         <ScrollAnimation className="mb-20" delay={500}>
                             <div className="flex flex-col justify-center gap-6 lg:flex-row">
                                 <Link
-                                    href={route('register')}
+                                    href={route('our.journey')}
                                     className="inline-block rounded-none border-2 border-[#2c2c2c] bg-[#2c2c2c] px-12 py-4 text-base font-medium uppercase leading-normal tracking-wider text-white transition-all duration-500 hover:border-[#d4af37] hover:bg-[#d4af37]"
                                 >
-                                    Start Our Journey
+                                    View Our Story
                                 </Link>
                                 <Link
                                     href={route('login')}
