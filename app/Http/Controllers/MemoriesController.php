@@ -9,6 +9,7 @@ use App\Models\Image;
 use App\Services\CloudinaryService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class MemoriesController extends Controller
 {
@@ -121,12 +122,41 @@ class MemoriesController extends Controller
         $request->validate([
             'memory_title' => 'required|string|max:255',
             'memory_description' => 'required|string',
+            'deleted_image_ids' => 'sometimes|string', // JSON string
         ]);
 
-        $memory->update([
-            'memory_title' => $request->memory_title,
-            'memory_description' => $request->memory_description,
-        ]);
+        DB::transaction(function () use ($request, $memory) {
+            // Update basic memory info (captions)
+            $memory->update([
+                'memory_title' => $request->memory_title,
+                'memory_description' => $request->memory_description,
+            ]);
+
+            // Handle deleted images
+            if ($request->has('deleted_image_ids') && $request->deleted_image_ids) {
+                $deletedIds = json_decode($request->deleted_image_ids, true);
+                if (is_array($deletedIds) && !empty($deletedIds)) {
+                    $imagesToDelete = Image::where('memory_id', $memory->id)
+                        ->whereIn('id', $deletedIds)
+                        ->get();
+
+                    foreach ($imagesToDelete as $image) {
+                        // Delete from Cloudinary
+                        $this->cloudinaryService->deleteImage($image->image_public_id);
+                        // Delete from database
+                        $image->delete();
+                    }
+                }
+            }
+
+            // Validate final image count
+            $finalImageCount = Image::where('memory_id', $memory->id)->count();
+            if ($finalImageCount < 5 || $finalImageCount > 10) {
+                throw ValidationException::withMessages([
+                    'images' => 'Album must have between 5-10 images.',
+                ]);
+            }
+        });
 
         return redirect()->route('memories.index')->with('message', 'Album updated successfully!');
     }
