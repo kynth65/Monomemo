@@ -1,4 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
+import { ReactLenis } from '@studio-freight/react-lenis';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -34,7 +35,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <>
+        <ReactLenis root>
             <Head title="Log In" />
             <div className="flex min-h-screen flex-col items-center justify-center bg-[#f8f7f5] p-6 text-[#2c2c2c]">
                 <div className="mx-auto w-full max-w-sm">
@@ -42,15 +43,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <Link href={route('home')}>
                             <h1 className="text-3xl font-extralight tracking-wider text-[#2c2c2c]">MONOMEMO</h1>
                         </Link>
-                        <h2 className="mt-4 text-2xl font-light tracking-wide text-[#2c2c2c]">
-                            Log in to your account
-                        </h2>
+                        <h2 className="mt-4 text-2xl font-light tracking-wide text-[#2c2c2c]">Log in to your account</h2>
                         <p className="mt-2 text-sm text-[#666]">
                             Don't have an account?{' '}
-                            <Link
-                                href={route('register')}
-                                className="font-medium text-[#d4af37] hover:text-[#2c2c2c]"
-                            >
+                            <Link href={route('register')} className="font-medium text-[#d4af37] hover:text-[#2c2c2c]">
                                 Sign up
                             </Link>
                         </p>
@@ -103,7 +99,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                         name="remember"
                                         checked={data.remember}
                                         onCheckedChange={() => setData('remember', !data.remember)}
-                                        className="data-[state=checked]:bg-[#d4af37] data-[state=checked]:border-[#d4af37]"
+                                        className="data-[state=checked]:border-[#d4af37] data-[state=checked]:bg-[#d4af37]"
                                     />
                                     <Label htmlFor="remember" className="ml-2 block text-sm">
                                         Remember me
@@ -112,10 +108,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                                 {canResetPassword && (
                                     <div className="text-sm">
-                                        <Link
-                                            href={route('password.request')}
-                                            className="font-medium text-[#d4af37] hover:text-[#2c2c2c]"
-                                        >
+                                        <Link href={route('password.request')} className="font-medium text-[#d4af37] hover:text-[#2c2c2c]">
                                             Forgot your password?
                                         </Link>
                                     </div>
@@ -125,7 +118,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <div>
                                 <Button
                                     type="submit"
-                                    className="flex w-full justify-center rounded-none border-2 border-[#2c2c2c] bg-[#2c2c2c] px-12 py-4 text-base font-medium uppercase tracking-wider text-white transition-all duration-500 hover:border-[#d4af37] hover:bg-[#d4af37]"
+                                    className="flex w-full justify-center rounded-none border-2 border-[#2c2c2c] bg-[#2c2c2c] px-12 py-4 text-base font-medium tracking-wider text-white uppercase transition-all duration-500 hover:border-[#d4af37] hover:bg-[#d4af37]"
                                     disabled={processing}
                                 >
                                     {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
@@ -134,13 +127,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </div>
                         </form>
 
-                        {status && (
-                            <div className="mb-4 mt-4 text-center text-sm font-medium text-green-600">{status}</div>
-                        )}
+                        {status && <div className="mt-4 mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
                     </div>
                 </div>
             </div>
-        </>
+        </ReactLenis>
     );
 }
-
