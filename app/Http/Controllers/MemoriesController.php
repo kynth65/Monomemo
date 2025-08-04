@@ -144,7 +144,7 @@ class MemoriesController extends Controller
         return redirect()->route('memories.index')->with('message', 'Album moved to archive successfully!');
     }
 
-    // This method is now for archiving, not permanent deletion
+    // Keep destroy for backward compatibility or other uses
     public function destroy(Memories $memory)
     {
         return $this->archive($memory);

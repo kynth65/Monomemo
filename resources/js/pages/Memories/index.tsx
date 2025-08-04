@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Calendar, Volume2, X } from 'lucide-react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Archive, ArrowLeft, ArrowRight, Calendar, Edit, MoreVertical, Volume2, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -43,6 +43,8 @@ export default function MemoriesIndex() {
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [viewMode, setViewMode] = useState<'grid' | 'single'>('grid');
     const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
+    const [showActionMenu, setShowActionMenu] = useState<number | null>(null);
+    const [showArchiveConfirm, setShowArchiveConfirm] = useState<number | null>(null);
 
     // Get available years from memories
     const availableYears = useMemo(() => {
@@ -80,6 +82,7 @@ export default function MemoriesIndex() {
         setSelectedMemory(memory);
         setViewMode('grid');
         setSelectedImageIndex(0);
+        setShowActionMenu(null); // Close any open action menu
     };
 
     const openSingleImage = (index: number) => {
@@ -102,10 +105,34 @@ export default function MemoriesIndex() {
         setSelectedImageIndex(newIndex);
     };
 
+    const handleArchive = (memoryId: number) => {
+        router.post(
+            route('memories.archive', { memory: memoryId }),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setShowArchiveConfirm(null);
+                    setShowActionMenu(null);
+                },
+                onError: (errors) => {
+                    console.error('Archive error:', errors);
+                    setShowArchiveConfirm(null);
+                    setShowActionMenu(null);
+                },
+            },
+        );
+    };
+
+    const handleClickOutside = () => {
+        setShowActionMenu(null);
+        setShowArchiveConfirm(null);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Memory Albums" />
-            <div className="space-y-6 p-4">
+            <div className="space-y-6 p-4" onClick={handleClickOutside}>
                 {flash.message && (
                     <Alert className="max-w-xl">
                         <Volume2 className="h-4 w-4" />
@@ -115,16 +142,24 @@ export default function MemoriesIndex() {
 
                 <div className="flex items-center justify-between">
                     <Label className="font-bold sm:text-sm lg:text-2xl">Your Memory Albums</Label>
-                    <Button className="text-sm" asChild>
-                        <Link href={route('memories.create')}>New</Link>
-                    </Button>
+                    <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={route('archive.index')} className="flex items-center space-x-1">
+                                <Archive className="h-4 w-4" />
+                                <span>Archive</span>
+                            </Link>
+                        </Button>
+                        <Button className="text-sm" asChild>
+                            <Link href={route('memories.create')}>New</Link>
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Year Filter Buttons */}
                 {availableYears.length > 0 && (
                     <div className="flex flex-wrap items-center gap-2">
                         <Calendar className="h-4 w-4 text-gray-500" />
-                        <Label className="text-sm font-medium">Filter by year:</Label>
+                        <Label className="text-sm font-medium text-gray-700">Filter by year:</Label>
                         <Button
                             variant={selectedYear === 'all' ? 'default' : 'outline'}
                             size="sm"
@@ -159,63 +194,107 @@ export default function MemoriesIndex() {
                         {filteredAndSortedMemories.map((memory) => (
                             <div
                                 key={memory.id}
-                                className="group relative h-40 cursor-pointer transition-all duration-300 hover:scale-102 hover:shadow-xl md:h-70 lg:h-100"
-                                onClick={() => openMemoryGrid(memory)}
+                                className="group relative h-40 transition-all duration-300 hover:scale-102 hover:shadow-xl md:h-70 lg:h-100"
                             >
-                                {/* Check if memory has images */}
-                                {memory.images && memory.images.length > 0 ? (
-                                    <>
-                                        {/* Main Preview Image - Centered */}
-                                        <div className="mb-4">
-                                            <div className="relative h-full w-full space-y-1">
-                                                <img
-                                                    src={memory.images[0].image_url}
-                                                    alt={memory.memory_title}
-                                                    className="h-40 w-full object-cover md:h-70 lg:h-100"
-                                                />
-                                                {/* Month and Year - bottom center */}
-                                                <div>
-                                                    <Label className="text-[15px] md:text-xl">
-                                                        {memory.memory_month.toUpperCase()}
-                                                        {selectedYear === 'all' && (
-                                                            <span className="ml-2 text-sm opacity-75">{memory.memory_year}</span>
-                                                        )}
-                                                    </Label>
+                                {/* Action Menu Button */}
+                                <div className="absolute top-2 right-2 z-10">
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowActionMenu(showActionMenu === memory.id ? null : memory.id);
+                                        }}
+                                        className="h-8 w-8 rounded-full bg-white/80 p-0 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-white"
+                                    >
+                                        <MoreVertical className="h-4 w-4" />
+                                    </Button>
+
+                                    {/* Action Menu Dropdown */}
+                                    {showActionMenu === memory.id && (
+                                        <div
+                                            className="absolute top-10 right-0 z-20 min-w-[120px] rounded-lg border bg-white py-1 shadow-lg"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <Link
+                                                href={route('memories.edit', memory.id)}
+                                                className="flex w-full items-center space-x-2 px-3 py-2 text-sm hover:bg-gray-50"
+                                            >
+                                                <Edit className="h-3 w-3" />
+                                                <span>Edit</span>
+                                            </Link>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowArchiveConfirm(memory.id);
+                                                }}
+                                                className="flex w-full items-center space-x-2 px-3 py-2 text-left text-sm hover:bg-gray-50"
+                                            >
+                                                <Archive className="h-3 w-3" />
+                                                <span>Archive</span>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Memory Content */}
+                                <div className="h-full cursor-pointer" onClick={() => openMemoryGrid(memory)}>
+                                    {/* Check if memory has images */}
+                                    {memory.images && memory.images.length > 0 ? (
+                                        <>
+                                            {/* Main Preview Image - Centered */}
+                                            <div className="mb-4">
+                                                <div className="relative h-full w-full space-y-1">
+                                                    <img
+                                                        src={memory.images[0].image_url}
+                                                        alt={memory.memory_title}
+                                                        className="h-40 w-full object-cover md:h-70 lg:h-100"
+                                                    />
+                                                    {/* Month and Year - bottom center */}
+                                                    <div>
+                                                        <Label className="text-[15px] md:text-xl">
+                                                            {memory.memory_month.toUpperCase()}
+                                                            {selectedYear === 'all' && (
+                                                                <span className="ml-2 text-sm opacity-75">{memory.memory_year}</span>
+                                                            )}
+                                                        </Label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        {/* Content - Bottom */}
-                                        <div className="absolute bottom-5 left-5 hidden lg:block"></div>
-                                    </>
-                                ) : (
-                                    <>
-                                        {/* No Images State */}
-                                        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-                                        {/* Month - Center */}
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="text-center">
-                                                <h2 className="text-3xl font-bold tracking-wider text-gray-600">
-                                                    {memory.memory_month.toUpperCase()}
-                                                </h2>
-                                                {selectedYear === 'all' && (
-                                                    <p className="mt-1 text-lg font-medium text-gray-500">{memory.memory_year}</p>
-                                                )}
-                                                <div className="mx-auto mt-1 h-1 w-12 rounded-full bg-gray-600 opacity-60" />
+                                            {/* Content - Bottom */}
+                                            <div className="absolute bottom-5 left-5 hidden lg:block"></div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {/* No Images State */}
+                                            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+                                            {/* Month - Center */}
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="text-center">
+                                                    <h2 className="text-3xl font-bold tracking-wider text-gray-600">
+                                                        {memory.memory_month.toUpperCase()}
+                                                    </h2>
+                                                    {selectedYear === 'all' && (
+                                                        <p className="mt-1 text-lg font-medium text-gray-500">{memory.memory_year}</p>
+                                                    )}
+                                                    <div className="mx-auto mt-1 h-1 w-12 rounded-full bg-gray-600 opacity-60" />
+                                                </div>
                                             </div>
-                                        </div>
-                                        {/* Content - Bottom */}
-                                        <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-gray-800 via-gray-800/90 to-transparent p-4 pt-10">
-                                            <h3 className="mb-1 text-lg font-bold text-white">{memory.memory_title}</h3>
-                                            <p className="mb-2 line-clamp-2 text-sm text-gray-200">{memory.memory_description}</p>
-                                            <div className="flex items-center justify-between text-xs text-gray-300">
-                                                <span>{new Date(memory.created_at).toLocaleDateString()}</span>
-                                                <span>No photos</span>
+                                            {/* Content - Bottom */}
+                                            <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-gray-800 via-gray-800/90 to-transparent p-4 pt-10">
+                                                <h3 className="mb-1 text-lg font-bold text-white">{memory.memory_title}</h3>
+                                                <p className="mb-2 line-clamp-2 text-sm text-gray-200">{memory.memory_description}</p>
+                                                <div className="flex items-center justify-between text-xs text-gray-300">
+                                                    <span>{new Date(memory.created_at).toLocaleDateString()}</span>
+                                                    <span>No photos</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </>
-                                )}
+                                        </>
+                                    )}
+                                </div>
+
                                 {/* Hover Effect Overlay */}
-                                <div className="bg-opacity-0 group-hover:bg-opacity-10 absolute inset-0 transition-all duration-300" />
+                                <div className="bg-opacity-0 group-hover:bg-opacity-10 pointer-events-none absolute inset-0 transition-all duration-300" />
                             </div>
                         ))}
                     </div>
@@ -258,6 +337,24 @@ export default function MemoriesIndex() {
                     </div>
                 )}
             </div>
+
+            {/* Archive Confirmation Modal */}
+            {showArchiveConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-lg bg-white p-6">
+                        <h3 className="mb-2 text-lg font-semibold text-gray-900">Archive Album?</h3>
+                        <p className="mb-4 text-sm text-gray-600">
+                            This album will be moved to your archive. You can restore it later from the archive page.
+                        </p>
+                        <div className="flex justify-end space-x-3">
+                            <Button variant="outline" onClick={() => setShowArchiveConfirm(null)}>
+                                Cancel
+                            </Button>
+                            <Button onClick={() => handleArchive(showArchiveConfirm)}>Archive</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Modal for Image Grid/Single View */}
             {selectedMemory && (

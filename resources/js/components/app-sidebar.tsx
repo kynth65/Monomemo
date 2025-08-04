@@ -17,6 +17,11 @@ const mainNavItems: NavItem[] = [
         href: '/memories',
         icon: History,
     },
+    {
+        title: 'Archive',
+        href: '/archive',
+        icon: History,
+    },
 ];
 
 // const footerNavItems: NavItem[] = [

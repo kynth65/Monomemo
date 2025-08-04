@@ -25,7 +25,7 @@ class ArchiveController extends Controller
             ->orderBy('archived_at', 'desc')
             ->get();
 
-        return Inertia::render('Archive/Index', [
+        return Inertia::render('Memories/Archive', [
             'archivedMemories' => $archivedMemories
         ]);
     }
