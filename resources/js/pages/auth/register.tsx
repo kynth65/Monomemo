@@ -1,13 +1,11 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/auth-layout';
 
 type RegisterForm = {
     name: string;
@@ -32,88 +30,112 @@ export default function Register() {
     };
 
     return (
-        <AuthLayout title="Create an account" description="Enter your details below to create your account">
+        <>
             <Head title="Register" />
-            <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                            id="name"
-                            type="text"
-                            required
-                            autoFocus
-                            tabIndex={1}
-                            autoComplete="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            disabled={processing}
-                            placeholder="Full name"
-                        />
-                        <InputError message={errors.name} className="mt-2" />
+            <div className="flex min-h-screen flex-col items-center justify-center bg-[#f8f7f5] p-6 text-[#2c2c2c]">
+                <div className="mx-auto w-full max-w-sm">
+                    <div className="text-center">
+                        <Link href={route('home')}>
+                            <h1 className="text-3xl font-extralight tracking-wider text-[#2c2c2c]">MONOMEMO</h1>
+                        </Link>
+                        <h2 className="mt-4 text-2xl font-light tracking-wide text-[#2c2c2c]">Create an account</h2>
+                        <p className="mt-2 text-sm text-[#666]">
+                            Already have an account?{' '}
+                            <Link
+                                href={route('login')}
+                                className="font-medium text-[#d4af37] hover:text-[#2c2c2c]"
+                            >
+                                Log in
+                            </Link>
+                        </p>
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            required
-                            tabIndex={2}
-                            autoComplete="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            disabled={processing}
-                            placeholder="email@example.com"
-                        />
-                        <InputError message={errors.email} />
-                    </div>
+                    <div className="mt-8">
+                        <form onSubmit={submit} className="space-y-6">
+                            <div>
+                                <Label htmlFor="name" className="sr-only">
+                                    Name
+                                </Label>
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    autoComplete="name"
+                                    required
+                                    autoFocus
+                                    value={data.name}
+                                    onChange={(e) => setData('name', e.target.value)}
+                                    className="w-full rounded-md border-gray-300 text-center shadow-sm focus:border-[#d4af37] focus:ring-[#d4af37]"
+                                    placeholder="Full name"
+                                />
+                                <InputError message={errors.name} className="mt-2 text-center" />
+                            </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            required
-                            tabIndex={3}
-                            autoComplete="new-password"
-                            value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                            disabled={processing}
-                            placeholder="Password"
-                        />
-                        <InputError message={errors.password} />
-                    </div>
+                            <div>
+                                <Label htmlFor="email" className="sr-only">
+                                    Email address
+                                </Label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    autoComplete="email"
+                                    required
+                                    value={data.email}
+                                    onChange={(e) => setData('email', e.target.value)}
+                                    className="w-full rounded-md border-gray-300 text-center shadow-sm focus:border-[#d4af37] focus:ring-[#d4af37]"
+                                    placeholder="email@example.com"
+                                />
+                                <InputError message={errors.email} className="mt-2 text-center" />
+                            </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="password_confirmation">Confirm password</Label>
-                        <Input
-                            id="password_confirmation"
-                            type="password"
-                            required
-                            tabIndex={4}
-                            autoComplete="new-password"
-                            value={data.password_confirmation}
-                            onChange={(e) => setData('password_confirmation', e.target.value)}
-                            disabled={processing}
-                            placeholder="Confirm password"
-                        />
-                        <InputError message={errors.password_confirmation} />
-                    </div>
+                            <div>
+                                <Label htmlFor="password" className="sr-only">
+                                    Password
+                                </Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    autoComplete="new-password"
+                                    required
+                                    value={data.password}
+                                    onChange={(e) => setData('password', e.target.value)}
+                                    className="w-full rounded-md border-gray-300 text-center shadow-sm focus:border-[#d4af37] focus:ring-[#d4af37]"
+                                    placeholder="Password"
+                                />
+                                <InputError message={errors.password} className="mt-2 text-center" />
+                            </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Create account
-                    </Button>
+                            <div>
+                                <Label htmlFor="password_confirmation" className="sr-only">
+                                    Confirm password
+                                </Label>
+                                <Input
+                                    id="password_confirmation"
+                                    type="password"
+                                    autoComplete="new-password"
+                                    required
+                                    value={data.password_confirmation}
+                                    onChange={(e) => setData('password_confirmation', e.target.value)}
+                                    className="w-full rounded-md border-gray-300 text-center shadow-sm focus:border-[#d4af37] focus:ring-[#d4af37]"
+                                    placeholder="Confirm password"
+                                />
+                                <InputError message={errors.password_confirmation} className="mt-2 text-center" />
+                            </div>
+
+                            <div>
+                                <Button
+                                    type="submit"
+                                    className="flex w-full justify-center rounded-none border-2 border-[#2c2c2c] bg-[#2c2c2c] px-12 py-4 text-base font-medium uppercase tracking-wider text-white transition-all duration-500 hover:border-[#d4af37] hover:bg-[#d4af37]"
+                                    disabled={processing}
+                                >
+                                    {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                                    Create account
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
-                <div className="text-center text-sm text-muted-foreground">
-                    Already have an account?{' '}
-                    <TextLink href={route('login')} tabIndex={6}>
-                        Log in
-                    </TextLink>
-                </div>
-            </form>
-        </AuthLayout>
+            </div>
+        </>
     );
 }
+
