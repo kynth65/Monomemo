@@ -4,8 +4,8 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Volume2, X } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowLeft, ArrowRight, Calendar, Volume2, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,6 +26,7 @@ interface Memory {
     memory_title: string;
     memory_description: string;
     memory_month: string;
+    memory_year: number;
     created_at: string;
     images: Image[];
 }
@@ -41,6 +42,39 @@ export default function MemoriesIndex() {
     const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [viewMode, setViewMode] = useState<'grid' | 'single'>('grid');
+    const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
+
+    // Get available years from memories
+    const availableYears = useMemo(() => {
+        const years = [...new Set(memories.map((memory) => memory.memory_year))];
+        return years.sort((a, b) => b - a); // Sort descending (newest first)
+    }, [memories]);
+
+    // Month order for proper sorting
+    const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    // Filter and sort memories
+    const filteredAndSortedMemories = useMemo(() => {
+        let filtered = memories;
+
+        // Filter by year if a specific year is selected
+        if (selectedYear !== 'all') {
+            filtered = memories.filter((memory) => memory.memory_year === selectedYear);
+        }
+
+        // Sort by month order (January to December)
+        return filtered.sort((a, b) => {
+            // First sort by year (descending for 'all', not needed for specific year)
+            if (selectedYear === 'all' && a.memory_year !== b.memory_year) {
+                return b.memory_year - a.memory_year;
+            }
+
+            // Then sort by month order (January to December)
+            const monthA = monthOrder.indexOf(a.memory_month);
+            const monthB = monthOrder.indexOf(b.memory_month);
+            return monthA - monthB;
+        });
+    }, [memories, selectedYear, monthOrder]);
 
     const openMemoryGrid = (memory: Memory) => {
         setSelectedMemory(memory);
@@ -71,7 +105,6 @@ export default function MemoriesIndex() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Memory Albums" />
-
             <div className="space-y-6 p-4">
                 {flash.message && (
                     <Alert className="max-w-xl">
@@ -87,9 +120,43 @@ export default function MemoriesIndex() {
                     </Button>
                 </div>
 
-                {memories.length > 0 ? (
+                {/* Year Filter Buttons */}
+                {availableYears.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Calendar className="h-4 w-4 text-gray-500" />
+                        <Label className="text-sm font-medium">Filter by year:</Label>
+                        <Button
+                            variant={selectedYear === 'all' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setSelectedYear('all')}
+                            className="text-xs"
+                        >
+                            All Years
+                        </Button>
+                        {availableYears.map((year) => (
+                            <Button
+                                key={year}
+                                variant={selectedYear === year ? 'default' : 'outline'}
+                                size="sm"
+                                onClick={() => setSelectedYear(year)}
+                                className="text-xs"
+                            >
+                                {year}
+                            </Button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Results Summary */}
+                {selectedYear !== 'all' && (
+                    <div className="text-sm text-gray-600">
+                        Showing {filteredAndSortedMemories.length} album{filteredAndSortedMemories.length !== 1 ? 's' : ''} for {selectedYear}
+                    </div>
+                )}
+
+                {filteredAndSortedMemories.length > 0 ? (
                     <div className="grid grid-cols-2 gap-1 space-y-10 md:grid-cols-3 lg:gap-4">
-                        {memories.map((memory) => (
+                        {filteredAndSortedMemories.map((memory) => (
                             <div
                                 key={memory.id}
                                 className="group relative h-40 cursor-pointer transition-all duration-300 hover:scale-102 hover:shadow-xl md:h-70 lg:h-100"
@@ -106,13 +173,17 @@ export default function MemoriesIndex() {
                                                     alt={memory.memory_title}
                                                     className="h-40 w-full object-cover md:h-70 lg:h-100"
                                                 />
-                                                {/* Month - bottom center */}
+                                                {/* Month and Year - bottom center */}
                                                 <div>
-                                                    <Label className="text-[15px] md:text-xl"> {memory.memory_month.toUpperCase()}</Label>
+                                                    <Label className="text-[15px] md:text-xl">
+                                                        {memory.memory_month.toUpperCase()}
+                                                        {selectedYear === 'all' && (
+                                                            <span className="ml-2 text-sm opacity-75">{memory.memory_year}</span>
+                                                        )}
+                                                    </Label>
                                                 </div>
                                             </div>
                                         </div>
-
                                         {/* Content - Bottom */}
                                         <div className="absolute bottom-5 left-5 hidden lg:block"></div>
                                     </>
@@ -120,17 +191,18 @@ export default function MemoriesIndex() {
                                     <>
                                         {/* No Images State */}
                                         <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-
                                         {/* Month - Center */}
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <div className="text-center">
                                                 <h2 className="text-3xl font-bold tracking-wider text-gray-600">
                                                     {memory.memory_month.toUpperCase()}
                                                 </h2>
+                                                {selectedYear === 'all' && (
+                                                    <p className="mt-1 text-lg font-medium text-gray-500">{memory.memory_year}</p>
+                                                )}
                                                 <div className="mx-auto mt-1 h-1 w-12 rounded-full bg-gray-600 opacity-60" />
                                             </div>
                                         </div>
-
                                         {/* Content - Bottom */}
                                         <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-gray-800 via-gray-800/90 to-transparent p-4 pt-10">
                                             <h3 className="mb-1 text-lg font-bold text-white">{memory.memory_title}</h3>
@@ -142,7 +214,6 @@ export default function MemoriesIndex() {
                                         </div>
                                     </>
                                 )}
-
                                 {/* Hover Effect Overlay */}
                                 <div className="bg-opacity-0 group-hover:bg-opacity-10 absolute inset-0 transition-all duration-300" />
                             </div>
@@ -160,12 +231,29 @@ export default function MemoriesIndex() {
                                 />
                             </svg>
                         </div>
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">No albums yet</h3>
-                        <p className="mt-1 text-sm text-gray-500">Create your first memory album with 5-10 images.</p>
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">
+                            {selectedYear === 'all' ? 'No albums yet' : `No albums for ${selectedYear}`}
+                        </h3>
+                        <p className="mt-1 text-sm text-gray-500">
+                            {selectedYear === 'all'
+                                ? 'Create your first memory album with 5-10 images.'
+                                : `You haven't created any albums for ${selectedYear} yet.`}
+                        </p>
                         <div className="mt-6">
-                            <Button asChild>
-                                <Link href={route('memories.create')}>Create First Album</Link>
-                            </Button>
+                            {selectedYear === 'all' ? (
+                                <Button asChild>
+                                    <Link href={route('memories.create')}>Create First Album</Link>
+                                </Button>
+                            ) : (
+                                <div className="space-x-2">
+                                    <Button variant="outline" onClick={() => setSelectedYear('all')}>
+                                        View All Years
+                                    </Button>
+                                    <Button asChild>
+                                        <Link href={route('memories.create')}>Create Album</Link>
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -185,7 +273,6 @@ export default function MemoriesIndex() {
                                 <X className="h-5 w-5" />
                             </Button>
                         </div>
-
                         {/* Modal Content */}
                         <div className="max-h-[80vh] overflow-auto">
                             {viewMode === 'grid' ? (
@@ -227,19 +314,16 @@ export default function MemoriesIndex() {
                                             </Button>
                                         </>
                                     )}
-
                                     {/* Current Image */}
                                     <img
                                         src={selectedMemory.images[selectedImageIndex]?.image_url}
                                         alt={`${selectedMemory.memory_title} - Image ${selectedImageIndex + 1}`}
                                         className="max-h-[70vh] max-w-full object-contain"
                                     />
-
                                     {/* Image Counter */}
                                     <div className="bg-opacity-50 absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black px-3 py-1 text-sm text-white">
                                         {selectedImageIndex + 1} / {selectedMemory.images.length}
                                     </div>
-
                                     {/* Back to Grid Button */}
                                     <Button
                                         variant="ghost"
