@@ -1,14 +1,9 @@
+import { ScrollAnimation } from '@/components/scroll-animation';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
-    const [isVisible, setIsVisible] = useState(false);
-
-    useEffect(() => {
-        setIsVisible(true);
-    }, []);
 
     return (
         <>
@@ -51,24 +46,22 @@ export default function Welcome() {
 
                 {/* Main Content */}
                 <div className="flex w-full items-center justify-center lg:grow">
-                    <main className="flex w-full max-w-[335px] flex-col items-center text-center lg:max-w-5xl">
+                    <main className="flex w-full max-w-[335px] flex-col items-center text-center lg:max-w-7xl">
                         {/* Logo Section */}
-                        <div
-                            className={`mt-40 mb-100 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-                        >
-                            <h1 className="mb-6 text-6xl leading-none font-extralight tracking-[0.15em] text-[#2c2c2c] lg:text-9xl xl:text-[14rem]">
-                                MONOMEMO
-                            </h1>
-                            <div className="relative text-3xl font-light tracking-[0.3em] text-[#d4af37] italic lg:text-4xl xl:text-8xl">
-                                <span className="relative z-10">One Memory</span>
-                                <div className="absolute inset-0 top-1/2 h-[1px] w-full -translate-y-1/2 transform bg-[#d4af37] opacity-20"></div>
+                        <ScrollAnimation>
+                            <div className="mt-40 mb-74">
+                                <h1 className="mb-6 text-6xl leading-none font-extralight tracking-[0.15em] text-[#2c2c2c] lg:text-9xl xl:text-[14rem]">
+                                    MONOMEMO
+                                </h1>
+                                <div className="relative text-3xl font-light tracking-[0.3em] text-[#d4af37] italic lg:text-4xl xl:text-8xl">
+                                    <span className="relative z-10">One Memory</span>
+                                    <div className="absolute inset-0 top-1/2 h-[1px] w-full -translate-y-1/2 transform bg-[#d4af37] opacity-20"></div>
+                                </div>
                             </div>
-                        </div>
+                        </ScrollAnimation>
 
                         {/* Main Headline */}
-                        <div
-                            className={`mb-16 transform transition-all delay-300 duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-                        >
+                        <ScrollAnimation className="mb-16" delay={300}>
                             <h2 className="mb-8 max-w-5xl text-4xl leading-[1.1] font-extralight tracking-wide lg:text-6xl xl:text-7xl">
                                 MEMORIES THAT
                                 <br />
@@ -89,12 +82,10 @@ export default function Welcome() {
                                 <br className="hidden lg:block" />
                                 that truly matter without the noise of endless content.
                             </p>
-                        </div>
+                        </ScrollAnimation>
 
                         {/* Action Buttons */}
-                        <div
-                            className={`mb-20 transform transition-all delay-500 duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-                        >
+                        <ScrollAnimation className="mb-20" delay={500}>
                             <div className="flex flex-col justify-center gap-6 lg:flex-row">
                                 {auth.user ? (
                                     <>
@@ -128,13 +119,11 @@ export default function Welcome() {
                                     </>
                                 )}
                             </div>
-                        </div>
+                        </ScrollAnimation>
 
                         {/* Feature Points */}
-                        <div
-                            className={`w-full max-w-6xl transform transition-all delay-700 duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-                        >
-                            <div className="grid grid-cols-1 gap-12 text-center lg:grid-cols-3 lg:text-left">
+                        <ScrollAnimation className="w-full max-w-6xl" delay={700}>
+                            <div className="grid grid-cols-1 gap-20 text-center lg:grid-cols-3 lg:text-left">
                                 <div className="group relative">
                                     <div className="absolute -top-6 left-1/2 h-[2px] w-12 -translate-x-1/2 transform bg-[#d4af37] opacity-60 lg:left-0 lg:translate-x-0"></div>
                                     <h3 className="mb-4 text-xl font-light tracking-wide text-[#2c2c2c] uppercase lg:text-2xl">One Album Monthly</h3>
@@ -163,14 +152,12 @@ export default function Welcome() {
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </ScrollAnimation>
 
                         {/* Stats Section */}
-                        <div
-                            className={`mt-24 w-full max-w-6xl transform transition-all delay-900 duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-                        >
+                        <ScrollAnimation className="mt-24 w-full max-w-6xl" delay={900}>
                             <div className="border-t border-[#e0e0e0] pt-16">
-                                <div className="grid grid-cols-1 gap-12 text-center lg:grid-cols-3">
+                                <div className="grid grid-cols-1 gap-20 text-center lg:grid-cols-3">
                                     <div className="group">
                                         <div className="mb-4 text-5xl font-extralight tracking-wider text-[#d4af37] lg:text-6xl">12</div>
                                         <div className="text-sm font-light tracking-[0.2em] text-[#666] uppercase lg:text-base">Albums Per Year</div>
@@ -187,18 +174,16 @@ export default function Welcome() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </ScrollAnimation>
 
                         {/* Bottom Quote */}
-                        <div
-                            className={`mt-24 transform transition-all delay-1000 duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-                        >
+                        <ScrollAnimation className="mt-24" delay={1000}>
                             <div className="mx-auto mb-8 h-[1px] w-32 bg-[#d4af37] opacity-40"></div>
                             <blockquote className="max-w-4xl text-2xl leading-relaxed font-light tracking-wide text-[#999] italic lg:text-3xl">
                                 "In a world of countless images, we choose to remember one moment at a time."
                             </blockquote>
                             <div className="mx-auto mt-8 h-[1px] w-32 bg-[#d4af37] opacity-40"></div>
-                        </div>
+                        </ScrollAnimation>
                     </main>
                 </div>
 
