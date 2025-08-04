@@ -22,6 +22,7 @@ class MemoriesController extends Controller
     public function index()
     {
         $memories = Memories::with('images')
+            ->active() // Only get non-archived memories
             ->where('user_id', Auth::id())
             ->orderBy('memory_year', 'desc')
             ->orderBy('memory_month', 'desc')
@@ -36,8 +37,9 @@ class MemoriesController extends Controller
         $currentYear = date('Y');
         $currentMonth = date('F');
 
-        // Get existing memories for current user to determine which months are taken
-        $existingMemories = Memories::where('user_id', Auth::id())
+        // Get existing active memories for current user to determine which months are taken
+        $existingMemories = Memories::active()
+            ->where('user_id', Auth::id())
             ->select('memory_month', 'memory_year')
             ->get()
             ->groupBy('memory_year');
@@ -60,7 +62,7 @@ class MemoriesController extends Controller
             'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
-        // Check if memory already exists for this month/year
+        // Check if active memory already exists for this month/year
         $existingMemory = Memories::existsForMonthYear(
             Auth::id(),
             $request->memory_month,
@@ -69,7 +71,7 @@ class MemoriesController extends Controller
 
         if ($existingMemory) {
             throw ValidationException::withMessages([
-                'memory_month' => "You already have a memory album for {$request->memory_month} {$request->memory_year}. Please delete the existing album first or choose a different month/year.",
+                'memory_month' => "You already have an active memory album for {$request->memory_month} {$request->memory_year}. Please delete the existing album first or choose a different month/year.",
             ]);
         }
 
@@ -99,8 +101,8 @@ class MemoriesController extends Controller
 
     public function edit(Memories $memory)
     {
-        // Ensure user can only edit their own memories
-        if ($memory->user_id !== Auth::id()) {
+        // Ensure user can only edit their own active memories
+        if ($memory->user_id !== Auth::id() || $memory->isArchived()) {
             abort(403);
         }
 
@@ -111,8 +113,8 @@ class MemoriesController extends Controller
 
     public function update(Request $request, Memories $memory)
     {
-        // Ensure user can only update their own memories
-        if ($memory->user_id !== Auth::id()) {
+        // Ensure user can only update their own active memories
+        if ($memory->user_id !== Auth::id() || $memory->isArchived()) {
             abort(403);
         }
 
@@ -129,25 +131,26 @@ class MemoriesController extends Controller
         return redirect()->route('memories.index')->with('message', 'Album updated successfully!');
     }
 
-    public function destroy(Memories $memory)
+    // Archive memory (soft delete)
+    public function archive(Memories $memory)
     {
-        // Ensure user can only delete their own memories
-        if ($memory->user_id !== Auth::id()) {
+        // Ensure user can only archive their own active memories
+        if ($memory->user_id !== Auth::id() || $memory->isArchived()) {
             abort(403);
         }
 
-        // Delete images from Cloudinary
-        foreach ($memory->images as $image) {
-            $this->cloudinaryService->deleteImage($image->image_public_id);
-        }
+        $memory->archive();
 
-        // Delete the memory (images will be cascade deleted if you have foreign key constraints)
-        $memory->delete();
-
-        return redirect()->route('memories.index')->with('message', 'Album deleted successfully!');
+        return redirect()->route('memories.index')->with('message', 'Album moved to archive successfully!');
     }
 
-    // Check if month/year combination is available
+    // This method is now for archiving, not permanent deletion
+    public function destroy(Memories $memory)
+    {
+        return $this->archive($memory);
+    }
+
+    // Check if month/year combination is available (only for active memories)
     public function checkAvailability(Request $request)
     {
         $request->validate([
