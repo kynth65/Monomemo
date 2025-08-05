@@ -2,9 +2,16 @@ import { ScrollAnimation } from '@/components/scroll-animation';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ReactLenis } from '@studio-freight/react-lenis';
+import { useState } from 'react';
+import Tagaytay from '../../images/Tagaytay.jpg';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
 
     return (
         <ReactLenis root>
@@ -14,10 +21,12 @@ export default function Welcome() {
             </Head>
             <div className="flex min-h-screen flex-col items-center bg-[#f8f7f5] p-4 text-[#2c2c2c] sm:p-6 lg:justify-center lg:p-8">
                 {/* Header Navigation */}
-                <header className="w-full max-w-full px-4 text-sm md:px-6 lg:max-w-6xl">
+                <header className="relative w-full max-w-full px-4 text-sm md:px-6 lg:max-w-6xl">
                     <nav className="flex items-center justify-between">
                         <div className="text-sm font-medium tracking-widest">MONOMEMO</div>
-                        <div className="flex items-center gap-2 sm:gap-4">
+
+                        {/* Desktop Navigation */}
+                        <div className="hidden items-center gap-6 md:flex">
                             {auth.user ? (
                                 <Link
                                     href={route('dashboard')}
@@ -48,7 +57,69 @@ export default function Welcome() {
                                 </>
                             )}
                         </div>
+
+                        {/* Mobile Menu Toggle */}
+                        <div className="md:hidden">
+                            <button
+                                onClick={toggleMenu}
+                                className="text-sm font-medium tracking-widest text-[#2c2c2c] transition-colors hover:text-[#d4af37]"
+                            >
+                                {isMenuOpen ? 'CLOSE' : 'MENU'}
+                            </button>
+                        </div>
                     </nav>
+
+                    {/* Mobile Navigation Menu */}
+                    <div
+                        className={`fixed inset-0 z-50 transform transition-all duration-500 ease-in-out md:hidden ${
+                            isMenuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-4 opacity-0'
+                        } `}
+                        onClick={toggleMenu}
+                    >
+                        <div className="relative flex h-full flex-col items-center justify-center bg-[#2c2c2c]" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex flex-col items-center space-y-8">
+                                {auth.user ? (
+                                    <Link
+                                        href={route('dashboard')}
+                                        className="text-2xl font-light tracking-[0.3em] text-white uppercase transition-colors hover:text-[#d4af37]"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        Dashboard
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href={route('login')}
+                                            className="text-2xl font-light tracking-[0.3em] text-white uppercase transition-colors hover:text-[#d4af37]"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            Log in
+                                        </Link>
+                                        <Link
+                                            href={route('register')}
+                                            className="text-2xl font-light tracking-[0.3em] text-white uppercase transition-colors hover:text-[#d4af37]"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            Register
+                                        </Link>
+                                        <Link
+                                            href={route('our.journey')}
+                                            className="text-2xl font-light tracking-[0.3em] text-white uppercase transition-colors hover:text-[#d4af37]"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            Journey
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                            <button
+                                onClick={toggleMenu}
+                                className="absolute right-8 bottom-8 text-sm font-medium tracking-widest text-white transition-colors hover:text-[#d4af37]"
+                            >
+                                CLOSE
+                            </button>
+                        </div>
+                    </div>
                 </header>
 
                 {/* Main Content */}
@@ -56,13 +127,20 @@ export default function Welcome() {
                     <main className="flex w-full max-w-full flex-col items-center px-4 text-center md:px-6 lg:max-w-7xl">
                         {/* Logo Section */}
                         <ScrollAnimation>
-                            <div className="my-24 sm:my-32 md:my-40 lg:my-48">
-                                <h1 className="mb-4 text-5xl leading-none font-extralight tracking-[0.1em] text-[#2c2c2c] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[12rem]">
+                            <div className="my-50 sm:my-32 md:my-40 lg:my-48">
+                                <h1 className="mb-4 text-4xl leading-none font-extralight tracking-[0.1em] text-[#2c2c2c] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[12rem]">
                                     MONOMEMO
                                 </h1>
                                 <div className="relative text-xl font-light tracking-[0.2em] text-[#d4af37] italic sm:text-2xl md:text-3xl lg:text-4xl xl:text-6xl">
                                     <span className="relative z-10">One Memory</span>
                                     <div className="absolute inset-0 top-1/2 h-[1px] w-full -translate-y-1/2 transform bg-[#d4af37] opacity-20"></div>
+                                </div>
+                                <div className="mt-6 max-w-3xl text-base leading-relaxed font-light text-[#666] sm:text-lg md:text-xl lg:text-2xl flex justify-center items-center">
+                                    <img
+                                        src={Tagaytay}
+                                        alt="Tagaytay"
+                                        className="w-full h-full  rounded-lg object-cover shadow-lg"
+                                    />
                                 </div>
                             </div>
                         </ScrollAnimation>
