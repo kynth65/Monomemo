@@ -22,7 +22,7 @@ interface PageProps {
 }
 
 export default function Index() {
-    const { currentYear, currentMonth, existingMemories } = usePage<PageProps>().props;
+    const { currentYear, existingMemories } = usePage<PageProps>().props;
 
     const { data, setData, post, processing, errors } = useForm<{
         memory_title: string;

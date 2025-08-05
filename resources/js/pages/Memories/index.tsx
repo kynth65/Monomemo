@@ -53,10 +53,8 @@ export default function MemoriesIndex() {
     }, [memories]);
 
     // Month order for proper sorting
-    const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-    // Filter and sort memories
     const filteredAndSortedMemories = useMemo(() => {
+        const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         let filtered = memories;
 
         // Filter by year if a specific year is selected
@@ -76,7 +74,7 @@ export default function MemoriesIndex() {
             const monthB = monthOrder.indexOf(b.memory_month);
             return monthA - monthB;
         });
-    }, [memories, selectedYear, monthOrder]);
+    }, [memories, selectedYear]);
 
     const openMemoryGrid = (memory: Memory) => {
         setSelectedMemory(memory);

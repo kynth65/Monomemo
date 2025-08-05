@@ -57,10 +57,8 @@ export default function Archive() {
     }, [archivedMemories]);
 
     // Month order for proper sorting
-    const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-    // Filter and sort archived memories
     const filteredAndSortedMemories = useMemo(() => {
+        const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         let filtered = archivedMemories;
 
         if (selectedYear !== 'all') {
@@ -76,7 +74,7 @@ export default function Archive() {
             const monthB = monthOrder.indexOf(b.memory_month);
             return monthA - monthB;
         });
-    }, [archivedMemories, selectedYear, monthOrder]);
+    }, [archivedMemories, selectedYear]);
 
     const openMemoryGrid = (memory: ArchivedMemory) => {
         setSelectedMemory(memory);

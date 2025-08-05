@@ -44,7 +44,7 @@ interface PageProps {
 export default function Edit() {
     const { memory, errors } = usePage<PageProps>().props;
 
-    const [existingImages, setExistingImages] = useState<Image[]>(memory.images);
+    const [existingImages] = useState<Image[]>(memory.images);
     const [imagesToDelete, setImagesToDelete] = useState<number[]>([]);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -84,7 +84,12 @@ export default function Edit() {
         });
 
         // Use regular object instead of FormData for simpler handling
-        const submitData: any = {
+        const submitData: {
+            memory_title: string;
+            memory_description: string;
+            _method: 'PUT';
+            deleted_image_ids?: string;
+        } = {
             memory_title: data.memory_title,
             memory_description: data.memory_description,
             _method: 'PUT',

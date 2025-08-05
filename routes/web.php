@@ -15,7 +15,19 @@ Route::get('/our-journey', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        $memories = \App\Models\Memories::with('images')
+            ->where('user_id', \Illuminate\Support\Facades\Auth::id())
+            ->get();
+
+        $allImages = $memories->flatMap(function ($memory) {
+            return $memory->images;
+        });
+
+        $shuffledImages = $allImages->shuffle()->values();
+
+        return Inertia::render('dashboard', [
+            'images' => $shuffledImages,
+        ]);
     })->name('dashboard');
 
     // Memories routes
