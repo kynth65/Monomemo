@@ -139,7 +139,7 @@ export default function Archive() {
 
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                        <ArchiveIcon className="h-6 w-6 text-gray-600" />
+                        <ArchiveIcon className="h-6 w-6" />
                         <Label className="font-bold sm:text-sm lg:text-2xl">Archived Albums</Label>
                     </div>
                     <Button variant="outline" asChild>
@@ -153,7 +153,7 @@ export default function Archive() {
                 {/* Year Filter Buttons */}
                 {availableYears.length > 0 && (
                     <div className="flex flex-wrap items-center gap-2">
-                        <Label className="text-sm font-medium text-gray-700">Filter by year:</Label>
+                        <Label className="text-sm font-medium">Filter by year:</Label>
                         <Button
                             variant={selectedYear === 'all' ? 'default' : 'outline'}
                             size="sm"

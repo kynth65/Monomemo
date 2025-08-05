@@ -35,9 +35,15 @@ export default function Welcome() {
                                     </Link>
                                     <Link
                                         href={route('register')}
-                                        className="inline-block rounded-sm border border-[#2c2c2c] px-4 py-1.5 text-xs leading-normal text-[#2c2c2c] transition-all hover:bg-[#2c2c2c] hover:text-white sm:px-5 sm:text-sm"
+                                        className="inline-block px-4 py-1.5 text-xs leading-normal text-[#2c2c2c] transition-colors hover:text-[#d4af37] sm:px-5 sm:text-sm"
                                     >
                                         Register
+                                    </Link>
+                                    <Link
+                                        href={route('our.journey')}
+                                        className="inline-block px-4 py-1.5 text-xs leading-normal text-[#2c2c2c] transition-colors hover:text-[#d4af37] sm:px-5 sm:text-sm"
+                                    >
+                                        Journey
                                     </Link>
                                 </>
                             )}
@@ -176,9 +182,7 @@ export default function Welcome() {
                 </div>
 
                 {/* Footer Info */}
-                <div className="mt-12 pb-4 text-center text-xs tracking-wider text-[#999]">
-                    MONOMEMO | MADE WITH LOVE FOR MY BUBBA
-                </div>
+                <div className="mt-12 pb-4 text-center text-xs tracking-wider text-[#999]">MONOMEMO | MADE WITH LOVE FOR MY BUBBA</div>
             </div>
         </ReactLenis>
     );

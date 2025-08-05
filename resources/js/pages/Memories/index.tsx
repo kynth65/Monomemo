@@ -156,8 +156,8 @@ export default function MemoriesIndex() {
                 {/* Year Filter Buttons */}
                 {availableYears.length > 0 && (
                     <div className="flex flex-wrap items-center gap-2">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        <Label className="text-sm font-medium text-gray-700">Filter by year:</Label>
+                        <Calendar className="h-4 w-4" />
+                        <Label className="text-sm font-medium">Filter by year:</Label>
                         <Button
                             variant={selectedYear === 'all' ? 'default' : 'outline'}
                             size="sm"
@@ -182,8 +182,10 @@ export default function MemoriesIndex() {
 
                 {/* Results Summary */}
                 {selectedYear !== 'all' && (
-                    <div className="text-sm text-gray-600">
-                        Showing {filteredAndSortedMemories.length} album{filteredAndSortedMemories.length !== 1 ? 's' : ''} for {selectedYear}
+                    <div>
+                        <Label className="text-sm">
+                            Showing {filteredAndSortedMemories.length} album{filteredAndSortedMemories.length !== 1 ? 's' : ''} for {selectedYear}
+                        </Label>
                     </div>
                 )}
 
