@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ReactLenis } from '@studio-freight/react-lenis';
+import { SmoothScroll } from '@/components/smooth-scroll';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -35,7 +35,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <ReactLenis root>
+        <SmoothScroll>
             <Head title="Log In" />
             <div className="flex min-h-screen flex-col items-center justify-center bg-[#f8f7f5] p-6 text-[#2c2c2c]">
                 <div className="mx-auto w-full max-w-sm">
@@ -131,6 +131,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
                 </div>
             </div>
-        </ReactLenis>
+        </SmoothScroll>
     );
 }

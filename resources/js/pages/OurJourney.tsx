@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ReactLenis } from '@studio-freight/react-lenis';
+import { SmoothScroll } from '@/components/smooth-scroll';
 import { useEffect, useRef, useState } from 'react';
 
 import { ScrollAnimation } from '@/components/scroll-animation';
@@ -94,7 +94,7 @@ export default function OurJourney() {
     };
 
     return (
-        <ReactLenis root>
+        <SmoothScroll>
             <Head title="Our Journey" />
             <div className="min-h-screen bg-[#f8f7f5] text-[#2c2c2c]">
                 <header className="py-12 text-center">
@@ -176,6 +176,6 @@ export default function OurJourney() {
                     </button>
                 </div>
             </div>
-        </ReactLenis>
+        </SmoothScroll>
     );
 }

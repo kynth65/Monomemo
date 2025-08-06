@@ -2,7 +2,7 @@ import { ScrollAnimation } from '@/components/scroll-animation';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, useAnimation, useInView } from 'framer-motion';
-import { ReactLenis } from 'lenis/react';
+import { SmoothScroll } from '@/components/smooth-scroll';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Welcome() {
@@ -30,7 +30,7 @@ export default function Welcome() {
     }, [isInView, controls]);
 
     return (
-        <ReactLenis root>
+        <SmoothScroll>
             <Head title="MONOMEMO - One Memory">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600" rel="stylesheet" />
@@ -291,6 +291,6 @@ export default function Welcome() {
                 {/* Footer Info */}
                 <div className="mt-12 pb-4 text-center text-xs tracking-wider text-[#999]">MONOMEMO | MADE WITH LOVE FOR MY BUBBA</div>
             </div>
-        </ReactLenis>
+        </SmoothScroll>
     );
 }

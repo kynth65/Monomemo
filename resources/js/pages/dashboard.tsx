@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ReactLenis } from '@studio-freight/react-lenis';
+import { SmoothScroll } from '@/components/smooth-scroll';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
@@ -41,7 +41,7 @@ export default function Dashboard() {
     };
 
     return (
-        <ReactLenis root>
+        <SmoothScroll>
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Dashboard" />
 
@@ -111,6 +111,6 @@ export default function Dashboard() {
                     </div>
                 </div>
             )}
-        </ReactLenis>
+        </SmoothScroll>
     );
 }
