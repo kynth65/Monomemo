@@ -135,12 +135,8 @@ export default function Welcome() {
                                     <span className="relative z-10">One Memory</span>
                                     <div className="absolute inset-0 top-1/2 h-[1px] w-full -translate-y-1/2 transform bg-[#d4af37] opacity-20"></div>
                                 </div>
-                                <div className="mt-6 max-w-3xl text-base leading-relaxed font-light text-[#666] sm:text-lg md:text-xl lg:text-2xl flex justify-center items-center">
-                                    <img
-                                        src={Tagaytay}
-                                        alt="Tagaytay"
-                                        className="w-full h-full  rounded-lg object-cover shadow-lg"
-                                    />
+                                <div className="mt-6 flex items-center justify-center text-base leading-relaxed font-light text-[#666] sm:text-lg md:text-xl lg:text-2xl">
+                                    <img src={Tagaytay} alt="Tagaytay" className="h-full w-full rounded-lg object-cover shadow-lg" />
                                 </div>
                             </div>
                         </ScrollAnimation>
