@@ -4,18 +4,16 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { ReactLenis } from 'lenis/react';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import Birthday from '../../images/birthday.jpg';
-import hotel from '../../images/hotel.jpg';
-import photobooth from '../../images/photobooth.png';
+
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const slideShow = [
-        { src: photobooth, alt: 'A photobooth strip of a couple.' },
-        { src: Birthday, alt: 'A birthday cake with lit candles.' },
-        { src: hotel, alt: 'A luxurious hotel room with a made bed.' },
+        { src: '/images/photobooth.png', alt: 'A photobooth strip of a couple.' },
+        { src: '/images/birthday.jpg', alt: 'A birthday cake with lit candles.' },
+        { src: '/images/hotel.jpg', alt: 'A luxurious hotel room with a made bed.' },
     ];
 
     const toggleMenu = () => {

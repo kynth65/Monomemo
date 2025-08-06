@@ -4,60 +4,53 @@ import { useEffect, useRef, useState } from 'react';
 
 import { ScrollAnimation } from '@/components/scroll-animation';
 import Nothing from '../../audio/NothingCover.mp3';
-import Azure_hotel from '../../images/azure-hotel.jpg';
-import Ek_Viking from '../../images/ek-viking.jpg';
-import MCU_Concert from '../../images/mcu-concert.jpg';
-import My_Graduation from '../../images/my-graduation.jpg';
-import Our_Second_Anniversary from '../../images/our-second-anniversary.jpg';
-import Pangasinan from '../../images/pangasinan.jpg';
-import Tagaytay_Cafe from '../../images/tagaytay-cafe.jpg';
-import Tagaytay from '../../images/tagaytay.jpg';
+
 
 const memories = [
     {
-        image: Azure_hotel,
+        image: '/images/azure-hotel.jpg',
         title: 'Staycation at Azure Hotel',
         date: 'July 1, 2024',
         memory: 'Ang saya pala mag-staycation sa Azure Hotel! Sana maulit tayo dito soon. Yung tayong dalawa lang, enjoying the view and each other’s company.',
     },
     {
-        image: Ek_Viking,
+        image: '/images/ek-viking.jpg',
         title: 'EK Viking Ride',
         date: 'January 13, 2024',
         memory: 'Sobrang nakakatakot pala talaga sumakay dito, halos di ko na kinaya yung ride na yun! Pero ang saya kasi kasama kita. You make every moment an adventure, even the scary ones.',
     },
     {
-        image: MCU_Concert,
+        image: '/images/mcu-concert.jpg',
         title: 'MCU Concert Experience',
         date: 'May 26, 2024',
         memory: 'Hindi ko malilimutan yung concert na ito kasi di man ako sanay sa gantong mga events, pero dahil sa presence mo, naging memorable siya. Your support made it special.',
     },
     {
-        image: My_Graduation,
+        image: '/images/my-graduation.jpg',
         title: 'My Graduation Day',
         date: 'July 11, 2024',
         memory: 'Having you there on my graduation day meant the world to me. Your support is my greatest motivation. We did it!',
     },
     {
-        image: Our_Second_Anniversary,
+        image: '/images/our-second-anniversary.jpg',
         title: 'Our Second Anniversary',
         date: 'December 21, 2024',
         memory: "Two years of love, laughter, and growth. Celebrating with you felt like a beautiful milestone. I'm grateful for every moment we share. Here's to many more years together!",
     },
     {
-        image: Pangasinan,
+        image: '/images/pangasinan.jpg',
         title: 'Beach Trip to Pangasinan',
         date: 'December 15, 2024',
         memory: '16 hours of travel pero di ko siya ganon naramdaman dahil kasama kita. Mas masaya at mas magaan talaga kapag ikaw kasama ko kapag may mga ganitong trips. Thank you for making every trip an adventure worth remembering.',
     },
     {
-        image: Tagaytay_Cafe,
+        image: '/images/tagaytay-cafe.jpg',
         title: 'Cozy Cafe in Tagaytay',
         date: 'June 2, 2024',
         memory: 'Sobrang ganda ng view dito sa Tagaytay, lalo na naenjoy natin halos lahat ng parte ng lugar. Thankyou sa pagdala sa akin dito. Your thoughtfulness always makes our outings special.',
     },
     {
-        image: Tagaytay,
+        image: '/images/tagaytay.jpg',
         title: 'A Day in Tagaytay',
         date: 'June 1, 2024',
         memory: "Thankyou for giving me a day to relax and enjoy the beautiful scenery of Tagaytay. Your company made it even more special. I love how we can just be ourselves and enjoy each other's presence.",
