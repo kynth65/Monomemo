@@ -7,6 +7,100 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { AlertCircleIcon, ImageIcon, InfoIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+// Image compression utility functions
+const compressImage = (
+    file: File,
+    options: {
+        maxSizeMB?: number;
+        maxWidthOrHeight?: number;
+        quality?: number;
+        minQuality?: number;
+    } = {},
+): Promise<File> => {
+    const { maxSizeMB = 5, maxWidthOrHeight = 1920, quality = 0.8, minQuality = 0.3 } = options;
+
+    return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        img.onload = async () => {
+            try {
+                let { width, height } = img;
+
+                if (width > maxWidthOrHeight || height > maxWidthOrHeight) {
+                    if (width > height) {
+                        height = (height * maxWidthOrHeight) / width;
+                        width = maxWidthOrHeight;
+                    } else {
+                        width = (width * maxWidthOrHeight) / height;
+                        height = maxWidthOrHeight;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx?.drawImage(img, 0, 0, width, height);
+
+                let currentQuality = quality;
+                let compressedFile: Blob | null;
+
+                do {
+                    compressedFile = await new Promise<Blob | null>((resolveBlob) => {
+                        canvas.toBlob(resolveBlob, 'image/jpeg', currentQuality);
+                    });
+
+                    if (!compressedFile) {
+                        throw new Error('Failed to compress image');
+                    }
+
+                    if (compressedFile.size <= maxSizeMB * 1024 * 1024 || currentQuality <= minQuality) {
+                        break;
+                    }
+
+                    currentQuality -= 0.1;
+                } while (currentQuality >= minQuality);
+
+                const finalFile = new File([compressedFile!], file.name, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                });
+
+                resolve(finalFile);
+            } catch (error) {
+                reject(error);
+            }
+        };
+
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = URL.createObjectURL(file);
+    });
+};
+
+const compressImages = async (files: File[], options = {}) => {
+    const compressedFiles: File[] = [];
+    const errors: { file: string; error: string }[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+        try {
+            const compressedFile = await compressImage(files[i], options);
+            compressedFiles.push(compressedFile);
+        } catch (error) {
+            console.error(`Failed to compress ${files[i].name}:`, error);
+            errors.push({
+                file: files[i].name,
+                error: error instanceof Error ? error.message : 'Unknown error',
+            });
+        }
+    }
+
+    return { compressedFiles, errors };
+};
+
+const needsCompression = (file: File, maxSizeMB = 5): boolean => {
+    return file.size > maxSizeMB * 1024 * 1024;
+};
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Create New Album',
@@ -19,6 +113,13 @@ interface PageProps {
     currentMonth: string;
     existingMemories: Record<string, Array<{ memory_month: string; memory_year: number }>>;
     [key: string]: unknown;
+}
+
+interface CompressionStat {
+    name: string;
+    originalSize: number;
+    compressedSize: number;
+    savings: string;
 }
 
 export default function Index() {
@@ -40,6 +141,8 @@ export default function Index() {
 
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [isMonthTaken, setIsMonthTaken] = useState(false);
+    const [isCompressing, setIsCompressing] = useState(false);
+    const [compressionStats, setCompressionStats] = useState<CompressionStat[]>([]);
 
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -67,7 +170,8 @@ export default function Index() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Updated handleImageChange with compression
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
 
         if (files.length > 10) {
@@ -75,11 +179,61 @@ export default function Index() {
             return;
         }
 
-        setData('images', files);
+        if (files.length === 0) return;
 
-        // Create preview URLs
-        const previews = files.map((file) => URL.createObjectURL(file));
-        setImagePreviews(previews);
+        setIsCompressing(true);
+
+        try {
+            // Check which files need compression
+            const filesToCompress = files.filter((file) => needsCompression(file, 5)); // 5MB threshold
+            const smallFiles = files.filter((file) => !needsCompression(file, 5));
+
+            console.log(`${filesToCompress.length} files need compression, ${smallFiles.length} are already small enough`);
+
+            let finalFiles = [...smallFiles]; // Start with files that don't need compression
+            const stats: CompressionStat[] = [];
+
+            // Compress large files
+            if (filesToCompress.length > 0) {
+                const { compressedFiles, errors } = await compressImages(filesToCompress, {
+                    maxSizeMB: 5, // Target 5MB max (well under Cloudinary's 50MB limit)
+                    maxWidthOrHeight: 1920,
+                    quality: 0.8,
+                    minQuality: 0.3,
+                });
+
+                if (errors.length > 0) {
+                    console.warn('Some files failed to compress:', errors);
+                    // You could show a warning to the user here
+                }
+
+                finalFiles = [...finalFiles, ...compressedFiles];
+
+                // Create compression stats for display
+                filesToCompress.forEach((originalFile, index) => {
+                    if (compressedFiles[index]) {
+                        stats.push({
+                            name: originalFile.name,
+                            originalSize: originalFile.size,
+                            compressedSize: compressedFiles[index].size,
+                            savings: (((originalFile.size - compressedFiles[index].size) / originalFile.size) * 100).toFixed(1),
+                        });
+                    }
+                });
+            }
+
+            setCompressionStats(stats);
+            setData('images', finalFiles);
+
+            // Create preview URLs for all final files
+            const previews = finalFiles.map((file) => URL.createObjectURL(file));
+            setImagePreviews(previews);
+        } catch (error) {
+            console.error('Error processing images:', error);
+            alert('Error processing images. Please try again.');
+        } finally {
+            setIsCompressing(false);
+        }
     };
 
     const removeImage = (index: number) => {
@@ -91,6 +245,10 @@ export default function Index() {
 
         setData('images', newImages);
         setImagePreviews(newPreviews);
+
+        // Update compression stats if removing a compressed image
+        const removedImage = data.images[index];
+        setCompressionStats((prev) => prev.filter((stat) => stat.name !== removedImage.name));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -125,7 +283,7 @@ export default function Index() {
             <div className="mx-auto max-w-4xl p-6">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold text-gray-900">Create New Memory Album</h1>
-                    <p className="text-gray-600">Upload 5-10 images to create your monthly memory album (max 10MB each)</p>
+                    <p className="text-gray-600">Upload 5-10 images to create your monthly memory album (auto-optimized)</p>
                     <div className="mt-2 rounded-lg bg-blue-50 p-3">
                         <p className="text-sm text-blue-700">
                             <InfoIcon className="mr-1 inline h-4 w-4" />
@@ -226,7 +384,7 @@ export default function Index() {
                         {errors.memory_description && <p className="mt-1 text-sm text-red-600">{errors.memory_description}</p>}
                     </div>
 
-                    {/* Multiple Image Upload */}
+                    {/* Multiple Image Upload with Compression */}
                     <div>
                         <label htmlFor="images" className="mb-2 block text-sm font-medium text-gray-700">
                             Album Images (5-10 images required)
@@ -239,16 +397,62 @@ export default function Index() {
                                         htmlFor="images"
                                         className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:outline-none hover:text-indigo-500"
                                     >
-                                        <span>Upload images</span>
-                                        <input id="images" type="file" multiple accept="image/*" onChange={handleImageChange} className="sr-only" />
+                                        <span>{isCompressing ? 'Compressing images...' : 'Upload images'}</span>
+                                        <input
+                                            id="images"
+                                            type="file"
+                                            multiple
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="sr-only"
+                                            disabled={isCompressing}
+                                        />
                                     </label>
                                     <p className="pl-1">or drag and drop</p>
                                 </div>
-                                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB each</p>
+                                <p className="text-xs text-gray-500">PNG, JPG, GIF - any size (auto-optimized)</p>
                                 <p className="text-xs text-gray-500">Select 5-10 images at once</p>
+                                {isCompressing && (
+                                    <div className="mt-2">
+                                        <div className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-800">
+                                            <svg
+                                                className="mr-2 -ml-1 h-3 w-3 animate-spin text-blue-800"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                ></path>
+                                            </svg>
+                                            Processing images...
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         {errors.images && <p className="mt-1 text-sm text-red-600">{errors.images}</p>}
+
+                        {/* Compression Stats */}
+                        {compressionStats.length > 0 && (
+                            <div className="mt-3 rounded-md bg-green-50 p-3">
+                                <h4 className="mb-2 text-sm font-medium text-green-800">Images Optimized Successfully ✓</h4>
+                                <div className="space-y-1 text-xs text-green-700">
+                                    {compressionStats.map((stat, index) => (
+                                        <div key={index} className="flex items-center justify-between">
+                                            <span className="mr-2 max-w-[200px] truncate">{stat.name}</span>
+                                            <span className="whitespace-nowrap">
+                                                {formatFileSize(stat.originalSize)} → {formatFileSize(stat.compressedSize)}
+                                                <span className="ml-1 font-medium text-green-600">({stat.savings}% saved)</span>
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Image Previews with File Sizes */}
@@ -283,14 +487,16 @@ export default function Index() {
 
                     <Button
                         type="submit"
-                        disabled={processing || data.images.length < 5 || isMonthTaken || !data.memory_month || !data.memory_year}
+                        disabled={processing || isCompressing || data.images.length < 5 || isMonthTaken || !data.memory_month || !data.memory_year}
                         className="w-full"
                     >
                         {processing
                             ? 'Creating Album...'
-                            : data.memory_month && data.memory_year
-                              ? `Create Album for ${data.memory_month} ${data.memory_year} (${data.images.length} images)`
-                              : `Create Album (${data.images.length} images)`}
+                            : isCompressing
+                              ? 'Processing Images...'
+                              : data.memory_month && data.memory_year
+                                ? `Create Album for ${data.memory_month} ${data.memory_year} (${data.images.length} images)`
+                                : `Create Album (${data.images.length} images)`}
                     </Button>
 
                     {Object.keys(errors).length > 0 && (

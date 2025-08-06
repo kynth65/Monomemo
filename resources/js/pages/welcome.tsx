@@ -212,13 +212,7 @@ export default function Welcome() {
                                     href={route('our.journey')}
                                     className="inline-block rounded-none border-2 border-[#2c2c2c] bg-[#2c2c2c] px-10 py-3 text-sm leading-normal font-medium tracking-wider text-white uppercase transition-all duration-500 hover:border-[#d4af37] hover:bg-[#d4af37] sm:px-12 sm:py-4 sm:text-base"
                                 >
-                                    View Our Story
-                                </Link>
-                                <Link
-                                    href={route('login')}
-                                    className="inline-block rounded-none border-2 border-[#2c2c2c] px-10 py-3 text-sm leading-normal font-medium tracking-wider text-[#2c2c2c] uppercase transition-all duration-500 hover:bg-[#2c2c2c] hover:text-white sm:px-12 sm:py-4 sm:text-base"
-                                >
-                                    Sign In
+                                    Click to View Our Journey
                                 </Link>
                             </div>
                         </ScrollAnimation>
