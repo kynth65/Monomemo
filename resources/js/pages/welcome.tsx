@@ -1,7 +1,7 @@
 import { ScrollAnimation } from '@/components/scroll-animation';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ReactLenis } from '@studio-freight/react-lenis';
+import { ReactLenis } from 'lenis/react';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import Birthday from '../../images/birthday.jpg';
