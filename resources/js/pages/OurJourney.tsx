@@ -18,19 +18,19 @@ const memories = [
         image: Azure_hotel,
         title: 'Staycation at Azure Hotel',
         date: 'July 1, 2024',
-        memory: 'Our first out-of-town trip together! It was a much-needed break. Loved the poolside vibes and just relaxing with you.',
+        memory: 'Ang saya pala mag-staycation sa Azure Hotel! Sana maulit tayo dito soon. Yung tayong dalawa lang, enjoying the view and each other’s company.',
     },
     {
         image: Ek_Viking,
         title: 'EK Viking Ride',
         date: 'January 13, 2024',
-        memory: 'I can still hear our screams on the Viking! Such a thrilling day at Enchanted Kingdom. Every ride was an adventure with you by my side.',
+        memory: 'Sobrang nakakatakot pala talaga sumakay dito, halos di ko na kinaya yung ride na yun! Pero ang saya kasi kasama kita. You make every moment an adventure, even the scary ones.',
     },
     {
         image: MCU_Concert,
         title: 'MCU Concert Experience',
         date: 'May 26, 2024',
-        memory: 'Singing our hearts out at the concert was surreal. Sharing that energy and music with you was a core memory I will cherish forever.',
+        memory: 'Hindi ko malilimutan yung concert na ito kasi di man ako sanay sa gantong mga events, pero dahil sa presence mo, naging memorable siya. Your support made it special.',
     },
     {
         image: My_Graduation,
@@ -42,25 +42,25 @@ const memories = [
         image: Our_Second_Anniversary,
         title: 'Our Second Anniversary',
         date: 'December 21, 2024',
-        memory: "Two years of love, laughter, and growth. Celebrating with you felt like a beautiful milestone. Here's to many more years together.",
+        memory: "Two years of love, laughter, and growth. Celebrating with you felt like a beautiful milestone. I'm grateful for every moment we share. Here's to many more years together!",
     },
     {
         image: Pangasinan,
         title: 'Beach Trip to Pangasinan',
         date: 'December 15, 2024',
-        memory: 'The sun, the sea, and you. Our beach trip to Pangasinan was pure bliss. I loved walking along the shore and just being with you.',
+        memory: '16 hours of travel pero di ko siya ganon naramdaman dahil kasama kita. Mas masaya at mas magaan talaga kapag ikaw kasama ko kapag may mga ganitong trips. Thank you for making every trip an adventure worth remembering.',
     },
     {
         image: Tagaytay_Cafe,
         title: 'Cozy Cafe in Tagaytay',
         date: 'June 2, 2024',
-        memory: 'That little cafe we found in Tagaytay was so charming. The coffee was great, but the conversation with you was even better.',
+        memory: 'Sobrang ganda ng view dito sa Tagaytay, lalo na naenjoy natin halos lahat ng parte ng lugar. Thankyou sa pagdala sa akin dito. Your thoughtfulness always makes our outings special.',
     },
     {
         image: Tagaytay,
         title: 'A Day in Tagaytay',
         date: 'June 1, 2024',
-        memory: "Another spontaneous trip to our favorite spot. The cool breeze and the beautiful view never get old, especially when I'm with you.",
+        memory: "Thankyou for giving me a day to relax and enjoy the beautiful scenery of Tagaytay. Your company made it even more special. I love how we can just be ourselves and enjoy each other's presence.",
     },
 ];
 

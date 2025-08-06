@@ -2,16 +2,35 @@ import { ScrollAnimation } from '@/components/scroll-animation';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ReactLenis } from '@studio-freight/react-lenis';
-import { useState } from 'react';
-import Tagaytay from '../../images/Tagaytay.jpg';
+import { motion, useAnimation, useInView } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import Birthday from '../../images/birthday.jpg';
+import hotel from '../../images/hotel.jpg';
+import photobooth from '../../images/photobooth.png';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const slideShow = [
+        { src: photobooth, alt: 'A photobooth strip of a couple.' },
+        { src: Birthday, alt: 'A birthday cake with lit candles.' },
+        { src: hotel, alt: 'A luxurious hotel room with a made bed.' },
+    ];
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
+
+    const imageContainerRef = useRef(null);
+    const isInView = useInView(imageContainerRef, { once: true, amount: 0.2 });
+    const controls = useAnimation();
+
+    useEffect(() => {
+        if (isInView) {
+            controls.start('visible');
+        }
+    }, [isInView, controls]);
 
     return (
         <ReactLenis root>
@@ -126,8 +145,8 @@ export default function Welcome() {
                 <div className="flex w-full flex-grow items-center justify-center">
                     <main className="flex w-full max-w-full flex-col items-center px-4 text-center md:px-6 lg:max-w-7xl">
                         {/* Logo Section */}
-                        <ScrollAnimation>
-                            <div className="my-50 sm:my-32 md:my-40 lg:my-48">
+                        <div className="my-50 sm:my-32 md:my-40 lg:my-48">
+                            <ScrollAnimation>
                                 <h1 className="mb-4 text-4xl leading-none font-extralight tracking-[0.1em] text-[#2c2c2c] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[12rem]">
                                     MONOMEMO
                                 </h1>
@@ -135,11 +154,34 @@ export default function Welcome() {
                                     <span className="relative z-10">One Memory</span>
                                     <div className="absolute inset-0 top-1/2 h-[1px] w-full -translate-y-1/2 transform bg-[#d4af37] opacity-20"></div>
                                 </div>
-                                <div className="mt-6 flex items-center justify-center text-base leading-relaxed font-light text-[#666] sm:text-lg md:text-xl lg:text-2xl">
-                                    <img src={Tagaytay} alt="Tagaytay" className="h-full w-full rounded-lg object-cover shadow-lg" />
-                                </div>
+                            </ScrollAnimation>
+
+                            <div ref={imageContainerRef} className="mt-8 grid grid-cols-3 justify-items-center gap-8">
+                                {slideShow.map((image, index) => (
+                                    <motion.div
+                                        key={index}
+                                        custom={index}
+                                        initial="hidden"
+                                        animate={controls}
+                                        variants={{
+                                            hidden: { opacity: 0, y: -50 },
+                                            visible: (i) => ({
+                                                opacity: 1,
+                                                y: 0,
+                                                transition: {
+                                                    delay: i * 0.3,
+                                                    duration: 0.8,
+                                                    ease: 'easeOut',
+                                                },
+                                            }),
+                                        }}
+                                        className="w-full max-w-sm"
+                                    >
+                                        <img src={image.src} alt={image.alt} className="h-auto w-full rounded-lg object-cover shadow-lg" />
+                                    </motion.div>
+                                ))}
                             </div>
-                        </ScrollAnimation>
+                        </div>
 
                         {/* Main Headline */}
                         <ScrollAnimation className="mb-12 sm:mb-16" delay={300}>
