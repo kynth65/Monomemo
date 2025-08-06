@@ -11,7 +11,7 @@ export default function Welcome() {
 
     const slideShow = [
         { src: '/images/photobooth.png', alt: 'A photobooth strip of a couple.' },
-        { src: '/images/birthday.jpg', alt: 'A birthday cake with lit candles.' },
+        { src: '/images/Birthday.jpg', alt: 'A birthday cake with lit candles.' },
         { src: '/images/hotel.jpg', alt: 'A luxurious hotel room with a made bed.' },
     ];
 
