@@ -1,10 +1,9 @@
 import { ScrollAnimation } from '@/components/scroll-animation';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ReactLenis } from 'lenis/react';
 import { motion, useAnimation, useInView } from 'framer-motion';
+import { ReactLenis } from 'lenis/react';
 import { useEffect, useRef, useState } from 'react';
-
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
