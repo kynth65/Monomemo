@@ -1,9 +1,7 @@
 import { SmoothScroll } from '@/components/smooth-scroll';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { X } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -50,7 +48,7 @@ export default function Dashboard() {
                             {images.map((image) => (
                                 <div
                                     key={image.id}
-                                    className="group mb-4 cursor-pointer break-inside-avoid overflow-hidden border-2 bg-white transition-all duration-200 hover:shadow-lg sm:mb-6 lg:mb-8"
+                                    className="group mb-4 cursor-pointer break-inside-avoid overflow-hidden transition-all duration-200 hover:shadow-lg sm:mb-6 lg:mb-8"
                                     onClick={() => openFullScreen(image)}
                                 >
                                     <img
@@ -91,20 +89,19 @@ export default function Dashboard() {
 
             {/* Full Screen Image Modal */}
             {showFullScreen && selectedImage && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={closeFullScreen}>
-                    <div className="relative max-h-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 sm:p-4" onClick={closeFullScreen}>
+                    <div className="relative flex h-full max-h-full w-full max-w-full items-center justify-center sm:max-w-4xl">
                         <img
                             src={selectedImage.image_url}
                             alt="Full screen image"
-                            className="max-h-full max-w-full object-contain"
-                            style={{ imageRendering: 'auto' }}
+                            className="max-h-[90vh] max-w-[95vw] object-contain sm:h-full sm:w-full"
+                            onClick={(e) => e.stopPropagation()} // Prevent clicks on image from closing modal
+                            style={{
+                                imageRendering: 'auto',
+                                width: 'auto',
+                                height: 'auto',
+                            }}
                         />
-                        <Button
-                            onClick={closeFullScreen}
-                            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/50 p-0 text-white hover:bg-black/70"
-                        >
-                            <X className="h-5 w-5" />
-                        </Button>
                     </div>
                 </div>
             )}
