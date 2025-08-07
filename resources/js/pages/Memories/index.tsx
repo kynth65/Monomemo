@@ -140,13 +140,7 @@ export default function MemoriesIndex() {
 
                 <div className="flex items-center justify-between">
                     <Label className="font-bold sm:text-sm lg:text-2xl">Your Memory Albums</Label>
-                    <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="sm" asChild>
-                            <Link href={route('archive.index')} className="flex items-center space-x-1">
-                                <Archive className="h-4 w-4" />
-                                <span>Archive</span>
-                            </Link>
-                        </Button>
+                    <div className="flex items-center">
                         <Button className="text-sm" asChild>
                             <Link href={route('memories.create')}>New</Link>
                         </Button>
@@ -155,28 +149,32 @@ export default function MemoriesIndex() {
 
                 {/* Year Filter Buttons */}
                 {availableYears.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        <Label className="text-sm font-medium">Filter by year:</Label>
-                        <Button
-                            variant={selectedYear === 'all' ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setSelectedYear('all')}
-                            className="text-xs"
-                        >
-                            All Years
-                        </Button>
-                        {availableYears.map((year) => (
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                            <Calendar className="h-4 w-4" />
+                            <Label className="text-sm font-medium">Filter by year:</Label>
+                        </div>
+                        <div className="mt-2 flex flex-row flex-wrap gap-2">
                             <Button
-                                key={year}
-                                variant={selectedYear === year ? 'default' : 'outline'}
+                                variant={selectedYear === 'all' ? 'default' : 'outline'}
                                 size="sm"
-                                onClick={() => setSelectedYear(year)}
+                                onClick={() => setSelectedYear('all')}
                                 className="text-xs"
                             >
-                                {year}
+                                All Years
                             </Button>
-                        ))}
+                            {availableYears.map((year) => (
+                                <Button
+                                    key={year}
+                                    variant={selectedYear === year ? 'default' : 'outline'}
+                                    size="sm"
+                                    onClick={() => setSelectedYear(year)}
+                                    className="text-xs"
+                                >
+                                    {year}
+                                </Button>
+                            ))}
+                        </div>
                     </div>
                 )}
 
