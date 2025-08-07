@@ -55,5 +55,5 @@ RUN mkdir -p /app/storage/logs \
 # Expose port
 EXPOSE $PORT
 
-# Start command
-CMD php -S 0.0.0.0:$PORT -t public
+# Run migrations and start server
+CMD php artisan migrate --force && php -S 0.0.0.0:$PORT -t public
