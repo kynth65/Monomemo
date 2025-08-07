@@ -41,6 +41,9 @@ RUN npm install
 # Copy application code
 COPY . .
 
+# Remove local .env file so Railway variables take precedence
+RUN rm -f .env
+
 # Build frontend assets
 RUN npm run build
 
