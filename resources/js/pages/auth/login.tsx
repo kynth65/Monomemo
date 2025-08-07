@@ -1,5 +1,5 @@
-import { Head, Link, useForm } from '@inertiajs/react';
 import { SmoothScroll } from '@/components/smooth-scroll';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -44,12 +44,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <h1 className="text-3xl font-extralight tracking-wider text-[#2c2c2c]">MONOMEMO</h1>
                         </Link>
                         <h2 className="mt-4 text-2xl font-light tracking-wide text-[#2c2c2c]">Log in to your account</h2>
-                        <p className="mt-2 text-sm text-[#666]">
+                        {/* <p className="mt-2 text-sm text-[#666]">
                             Don't have an account?{' '}
                             <Link href={route('register')} className="font-medium text-[#d4af37] hover:text-[#2c2c2c]">
                                 Sign up
                             </Link>
-                        </p>
+                        </p> */}
                     </div>
 
                     <div className="mt-8">

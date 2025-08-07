@@ -1,8 +1,8 @@
 import { ScrollAnimation } from '@/components/scroll-animation';
+import { SmoothScroll } from '@/components/smooth-scroll';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, useAnimation, useInView } from 'framer-motion';
-import { SmoothScroll } from '@/components/smooth-scroll';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Welcome() {
@@ -58,12 +58,12 @@ export default function Welcome() {
                                     >
                                         Log in
                                     </Link>
-                                    <Link
+                                    {/* <Link
                                         href={route('register')}
                                         className="inline-block px-4 py-1.5 text-xs leading-normal text-[#2c2c2c] transition-colors hover:text-[#d4af37] sm:px-5 sm:text-sm"
                                     >
                                         Register
-                                    </Link>
+                                    </Link> */}
                                     <Link
                                         href={route('our.journey')}
                                         className="inline-block px-4 py-1.5 text-xs leading-normal text-[#2c2c2c] transition-colors hover:text-[#d4af37] sm:px-5 sm:text-sm"
