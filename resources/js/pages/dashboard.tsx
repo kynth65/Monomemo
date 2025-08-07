@@ -1,10 +1,10 @@
+import { SmoothScroll } from '@/components/smooth-scroll';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { SmoothScroll } from '@/components/smooth-scroll';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -44,37 +44,36 @@ export default function Dashboard() {
         <SmoothScroll>
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Dashboard" />
-
                 <div className="p-6">
                     {images.length > 0 ? (
-                        <div className="grid w-full grid-cols-2 gap-14 lg:grid-cols-3">
+                        <div className="columns-2 gap-4 sm:gap-6 lg:columns-3 lg:gap-8">
                             {images.map((image) => (
                                 <div
                                     key={image.id}
-                                    className="group relative flex aspect-square items-center justify-center cursor-pointer"
+                                    className="group mb-4 cursor-pointer break-inside-avoid overflow-hidden border-2 bg-white transition-all duration-200 hover:shadow-lg sm:mb-6 lg:mb-8"
                                     onClick={() => openFullScreen(image)}
                                 >
                                     <img
                                         src={image.image_url}
                                         alt={`Memory Image ${image.id}`}
-                                        className="h-fit w-fit border-2 border-gray-200 object-cover"
+                                        className="w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                                        loading="lazy"
+                                        style={{
+                                            imageRendering: 'auto',
+                                            display: 'block',
+                                        }}
                                     />
                                 </div>
                             ))}
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-12 text-center">
-                            <svg
-                                className="mx-auto h-12 w-12 text-gray-400"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
+                            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth={2}
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"
                                 />
                             </svg>
                             <h3 className="mt-2 text-sm font-medium text-gray-900">No memories yet</h3>
@@ -92,19 +91,17 @@ export default function Dashboard() {
 
             {/* Full Screen Image Modal */}
             {showFullScreen && selectedImage && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-                    onClick={closeFullScreen}
-                >
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={closeFullScreen}>
                     <div className="relative max-h-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
                         <img
                             src={selectedImage.image_url}
                             alt="Full screen image"
                             className="max-h-full max-w-full object-contain"
+                            style={{ imageRendering: 'auto' }}
                         />
                         <Button
                             onClick={closeFullScreen}
-                            className="absolute top-4 right-4 h-10 w-10 rounded-full p-0"
+                            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/50 p-0 text-white hover:bg-black/70"
                         >
                             <X className="h-5 w-5" />
                         </Button>
