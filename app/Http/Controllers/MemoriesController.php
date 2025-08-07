@@ -29,7 +29,7 @@ class MemoriesController extends Controller
             ->orderBy('memory_month', 'desc')
             ->get();
 
-        return Inertia::render('Memories/Index', compact('memories'));
+        return Inertia::render('Memories/index', compact('memories'));
     }
 
     public function create()
