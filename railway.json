@@ -3,13 +3,12 @@
     "build": {
         "builder": "NIXPACKS",
         "nixpacksConfig": {
-            "providers": ["php", "node"],
             "phases": {
                 "setup": {
                     "nixPkgs": ["php82", "nodejs-20_x", "composer"]
                 },
                 "install": {
-                    "cmds": ["npm install", "composer install --no-dev --optimize-autoloader"]
+                    "cmds": ["composer install --no-dev --optimize-autoloader", "npm install"]
                 },
                 "build": {
                     "cmds": ["npm run build"]
